@@ -1,0 +1,150 @@
+2017/09/08
+
+>conda create -n djangorest django
+>activate djangorest
+>conda install -c conda-forge djangorestframework
+>conda install -c conda-forge django-filter
+
+>conda list
+
+>cd project_folder
+>django-admin startproject mysite .
+>python manage.py startapp meas
+
+モデルの定義 meas/models.py
+from django.db import models
+# Create your models here.
+import uuid
+class Entry(models.Model):
+    description = models.CharField(max_length=256)
+    condition = models.CharField(max_length=256)
+    created_at = models.DateTimeField(auto_now_add=True)
+    uuid = models.UUIDField(default=uuid.uuid4)
+    item = models.CharField(max_length=64)
+    value = models.FloatField()
+    unit = models.CharField(max_length=16, blank=True)
+
+データベース構築
+mysite/settings.py
+INSTALLED_APPS = [
+    ...
+    'meas',
+]
+>python manage.py makemigrations
+>python manage.py migrate
+
+管理者画面にデータベースエントリ追加 meas/admin.py
+from django.contrib import admin
+from .models import Entry
+@admin.register(Entry)
+class Entry(admin.ModelAdmin):
+    pass
+
+動作確認
+>python manage.py createsuperuser
+>python manage.py runserver
+http://localhost:8000/admin
+
+REST Frameworkの追加 mysite/settings.py
+INSTALLED_APPS = (
+    ...
+    'meas',
+    'rest_framework',
+)
+
+Serializerの定義 meas/serializer.py
+from rest_framework import serializers
+from .models import Entry
+
+class EntrySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Entry
+        fields = ('description', 'condition', 'created_at', 'uuid', 'item', 'value', 'unit')
+
+ViewSetの定義 meas/views.py
+import django_filters
+from rest_framework import viewsets, filters
+
+from .models import Entry
+from .serializer import EntrySerializer
+
+class EntryViewSet(viewsets.ModelViewSet):
+    queryset = Entry.objects.all()
+    serializer_class = EntrySerializer
+
+URL pattern定義 mysite/urls.py
+from django.conf.urls import url, include
+from django.contrib import admin
+from meas.urls import router
+urlpatterns = [
+    url(r'^admin/', admin.site.urls),
+    url(r'^api/', include(router.urls)),
+]
+
+URL pattern定義 meas/urls.py
+from rest_framework import routers
+from .views import EntryViewSet
+router = routers.DefaultRouter()
+router.register(r'entries', EntryViewSet)
+
+動作確認
+>python manage.py runserver
+http://localhost:8000/api/
+http://localhost:8000/api/entries/
+
+外部からアクセス
+>python manage.py runserver 0.0.0.0:8000
+mysite/settings.py
+ALLOWED_HOSTS = [‘*’]
+
+JSON登録例
+{
+    "description": "B301_test L0 Nothing",
+    "condition": "L0",
+    "created_at": "2017-09-08T06:02:21.221695Z",
+    "uuid": "1990e31b-928c-4619-9c64-acd882a416d9",
+    "item": "SNR",
+    "value": 6.94,
+    "unit": "dB"
+}
+
+ページネイション
+ペジネーションを使う場合は、DjangoREST用に設定が必要
+mysite/settings.py
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
+    'PAGE_SIZE': 20,
+}
+
+
+admin画面のEntry一覧表示に、追加情報を加える、サイドにフィルタを加える
+meas/admin.py
+class Entry(admin.ModelAdmin):
+    list_display =('description', 'created_at', 'condition')
+    list_filter = ['created_at']
+
+
+admin画面で表示されるEntryの複数形を、EntrysからEntriesに変更する
+meas/model.py
+class Entry(models.Model):
+    ...
+    class Meta:
+        verbose_name_plural = "entries"
+
+モデル変更を検討、ConditionとEntryを分けてリレーションモデルにする
+
+class Condition(models.Model):
+    description = models.CharField(max_length=256)
+    condition = models.CharField(max_length=256)
+    created_at = models.DateTimeField(auto_now_add=True)
+    lane = models.IntegerField(blank=True)
+    uuid = models.UUIDField(default=uuid.uuid4, unique=True)
+
+class Entry(models.Model):
+    uuid = models.ForeignKey('Condition', to_field='uuid')
+    item = models.CharField(max_length=64)
+    value = models.FloatField()
+    unit = models.CharField(max_length=16, blank=True)
+    class Meta:
+        verbose_name_plural = "entries"
+
