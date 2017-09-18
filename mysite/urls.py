@@ -22,6 +22,11 @@ urlpatterns = [
     url(r'^api/', include(router.urls)),
 ]
 
+from django.conf.urls import include
+urlpatterns += [
+    url(r'^meas/', include('meas.urls')),
+]
+
 from django.views.generic import RedirectView
 urlpatterns += [
     url(r'^$', RedirectView.as_view(url='/meas/', permanent=True)),
