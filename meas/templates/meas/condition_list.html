@@ -1,0 +1,19 @@
+{% extends "meas/base.html" %}
+
+{% block content %}
+    <h1>Condition List</h1>
+
+    {% if condition_list %}
+    <ul>
+
+      {% for condition in condition_list %}
+      <li>
+        <a href="{% url 'detail' condition.pk %}">{{ condition.description }}</a> {{condition.condition}} {{condition.lane}} ({{condition.created_at}})
+      </li>
+      {% endfor %}
+
+    </ul>
+    {% else %}
+      <p>There are no condition in the library.</p>
+    {% endif %}       
+{% endblock %}

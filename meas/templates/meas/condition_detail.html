@@ -1,0 +1,12 @@
+{% extends "meas/base.html" %}
+
+{% block content %}
+  <h1>Name: {{ condition.description }}</h1>
+
+  <p><strong>description:</strong> {{ condition.description }}</p>
+  <p><strong>condition:</strong> {{ condition.condition }}</p>
+  <p><strong>created:</strong> {{ condition.created_at }}</p> 
+  <p><strong>lane:</strong> {{ condition.lane }}</p>  
+  <p><strong>uuid:</strong> {{ condition.uuid }}</p> 
+
+{% endblock %}
