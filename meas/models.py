@@ -7,6 +7,7 @@ class Condition(models.Model):
     description = models.CharField(max_length=256)
     condition = models.CharField(max_length=256)
     created_at = models.DateTimeField(auto_now_add=True)
+    serial = models.CharField(max_length=256, blank=True)
     lane = models.IntegerField(blank=True)
     uuid = models.UUIDField(default=uuid.uuid4, unique=True)
 
