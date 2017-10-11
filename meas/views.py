@@ -48,3 +48,12 @@ class ConditionDetailView(generic.DetailView):
 #    def get_queryset(self):
 #        return Condition.objects.filter(condition.id=pk)
 
+class SerialListView(generic.ListView):
+    model = Condition
+    template_name = 'meas/serial_list.html'
+    def get_queryset(self):
+        return Condition.objects.values('serial')
+    
+
+class SerialDetailView(generic.DetailView):
+    model = Condition

@@ -6,9 +6,15 @@ router.register(r'conditions', views.ConditionViewSet)
 router.register(r'entries', views.EntryViewSet)
 
 from django.conf.urls import url
-urlpatterns = [
+urlpatterns = []
+urlpatterns += [
     url(r'^conditions/$', views.ConditionListView.as_view(), name='list'),
-    url(r'^condition/(?P<pk>\d+)$', views.ConditionDetailView.as_view(), name='detail'),
+    url(r'^conditions/(?P<pk>\d+)$', views.ConditionDetailView.as_view(), name='detail'),
+]
+
+urlpatterns += [
+    url(r'^serials/$', views.SerialListView.as_view(), name='serial_liset'),
+    url(r'^serials/(?P<pk>\d+)$', views.SerialDetailView.as_view(), name='serial_detail'),
 ]
 
 # はじめての Django アプリ作成、その 3 | Django documentation | Django 
