@@ -8,7 +8,7 @@
 
       {% for condition in condition_list %}
       <li>
-        {{ condition.serial }} {{ condition.description }} {{condition.condition}} {{condition.lane}} ({{condition.created_at}})
+        {{ condition.serial }} {{ condition.description }} {{condition.condition}} {{condition.lane}} ({{condition.created_at}}) {{condition.uuid}}
       </li>
       {% endfor %}
 

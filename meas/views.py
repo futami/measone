@@ -52,7 +52,7 @@ class SerialListView(generic.ListView):
     model = Condition
     template_name = 'meas/serial_list.html'
     def get_queryset(self):
-        return Condition.objects.values('serial')
+        return Condition.objects.values('serial').distinct()
     
 
 class SerialDetailView(generic.DetailView):
