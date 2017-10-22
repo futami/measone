@@ -57,3 +57,10 @@ class SerialListView(generic.ListView):
 
 class SerialDetailView(generic.DetailView):
     model = Condition
+
+class EntryListView(generic.ListView):
+    model = Entry
+    paginate_by = 20
+
+class EntryDetailView(generic.DetailView):
+    model = Entry

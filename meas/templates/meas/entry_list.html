@@ -1,0 +1,33 @@
+{% extends "meas/base.html" %}
+
+{% block content %}
+    <h1>Entry List</h1>
+
+    {% if entry_list %}
+    <ul>
+
+      {% if is_paginated %}
+      <div class="pagination">
+        {% if page_obj.has_previous %}
+        <a href="{% url 'entry_list' %}?page={{ page_obj.previous_page_number }}">previous</a>
+        {% endif %}
+        {% if page_obj.has_next %}
+        <a href="{% url 'entry_list' %}?page={{ page_obj.next_page_number }}">next</a>
+        {% endif %}
+      </div>
+      {% endif %}
+
+      {% for e in entry_list %}
+      <li>
+        <a href="{% url 'detail' e.uuid.pk %}">{{ e.uuid.uuid }}</a> {{e.item}} {{e.value}} ({{e.unit}})
+      </li>
+      {% endfor %}
+
+      
+      
+
+    </ul>
+    {% else %}
+      <p>There are no condition in the library.</p>
+    {% endif %}       
+{% endblock %}

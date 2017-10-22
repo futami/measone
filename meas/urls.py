@@ -13,8 +13,13 @@ urlpatterns += [
 ]
 
 urlpatterns += [
-    url(r'^serials/$', views.SerialListView.as_view(), name='serial_liset'),
+    url(r'^serials/$', views.SerialListView.as_view(), name='serial_list'),
     url(r'^serials/(?P<pk>\d+)$', views.SerialDetailView.as_view(), name='serial_detail'),
+]
+
+urlpatterns += [
+    url(r'^entries/$', views.EntryListView.as_view(), name='entry_list'),
+    url(r'^entries/(?P<pk>\d+)$', views.EntryDetailView.as_view(), name='entry_detail'),
 ]
 
 # はじめての Django アプリ作成、その 3 | Django documentation | Django 
