@@ -39,9 +39,9 @@ class ConditionListView(generic.ListView):
 #    template_name = 'app_name/index.html'
 #    context_object_name = 'latest_question_list'
     model = Condition
-#    def get_queryset(self):
-#        """Return the last five published questions."""
-#        return Condition.objects.order_by('-created_at')[:5]
+    def get_queryset(self):
+        return Condition.objects.order_by('-created_at')
+ #       return Condition.objects.order_by('-created_at')[:5]
 
 class ConditionDetailView(generic.DetailView):
     model = Condition
