@@ -8,7 +8,7 @@
 
       {% for condition in condition_list %}
       <li>
-        <a href="{% url 'serial_detail' condition.serial %}">{{ condition.serial }}</a>  {{ condition.description }} {{condition.condition}} {{condition.lane}} ({{condition.created_at}}) {{condition.uuid}}
+        <a href="{% url 'serial_detail' condition.serial %}">{{ condition.serial }}</a> {{ condition.description }} {{condition.condition}} ({{condition.created_at}}) {{condition.uuid}}
       </li>
       {% endfor %}
 

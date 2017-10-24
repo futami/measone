@@ -7,13 +7,12 @@
   <p><strong>condition:</strong> {{ condition.condition }}</p>
   <p><strong>created:</strong> {{ condition.created_at }}</p> 
   <p><strong>serial number:</strong> {{ condition.serial }}</p>
-  <p><strong>lane:</strong> {{ condition.lane }}</p>  
   <p><strong>uuid:</strong> {{ condition.uuid }}</p> 
 
   <div style="margin-left:20px;margin-top:20px">
     <h2>Entries</h2>
     {% for e in condition.entry_set.all %}
-    <p>{{e.item}}:&nbsp;{{e.value}}</p>
+    <p>L{{e.lane}}:&nbsp;{{e.item}}:&nbsp;{{e.value}}</p>
     {% endfor %}
 </div>
 {% endblock %}

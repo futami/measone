@@ -5,11 +5,11 @@ from .models import Condition, Entry
 
 @admin.register(Condition)
 class ConditionAdmin(admin.ModelAdmin):
-    list_display =('description', 'condition', 'lane', 'created_at')
+    list_display =('description', 'condition', 'serial', 'created_at')
     list_filter = ['created_at']
 
 @admin.register(Entry)
 class EntryAdmin(admin.ModelAdmin):
-    list_display =('item', 'value', 'unit')
+    list_display =('lane', 'item', 'value', 'unit', 'created_at')
     list_filter = ['item']
 
