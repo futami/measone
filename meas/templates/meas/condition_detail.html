@@ -4,15 +4,16 @@
   <h1>Name: {{ condition.description }}</h1>
 
   <p><strong>description:</strong> {{ condition.description }}</p>
-  <p><strong>condition:</strong> {{ condition.condition }}</p>
-  <p><strong>created:</strong> {{ condition.created_at }}</p> 
   <p><strong>serial number:</strong> {{ condition.serial }}</p>
+  <p><strong>condition:</strong> {{ condition.condition }}</p>
+  <p><strong>lane:</strong> L{{ condition.lane }}</p>
+  <p><strong>created:</strong> {{ condition.created_at }}</p> 
   <p><strong>uuid:</strong> {{ condition.uuid }}</p> 
 
   <div style="margin-left:20px;margin-top:20px">
     <h2>Entries</h2>
     {% for e in condition.entry_set.all %}
-    <p>L{{e.lane}}:&nbsp;{{e.item}}:&nbsp;{{e.value}}</p>
+    <p>{{e.item}}:&nbsp;{{e.value}}:&nbsp;{{e.unit}}</p>
     {% endfor %}
 </div>
 {% endblock %}
