@@ -1,14 +1,13 @@
 {% extends "meas/base.html" %}
 
 {% block content %}
-    <h1>Serial List</h1>
 
     {% if condition_list %}
+    <h1>Serial List</h1>
     <ul>
-
-      {% for condition in condition_list %}
+      {% for c in condition_list %}
       <li>
-        <a href="{% url 'serial_detail' condition.serial %}">{{ condition.serial }}</a> {{ condition.description }} {{condition.condition}} ({{condition.created_at}}) {{condition.uuid}}
+        <a href="{% url 'serial_detail' c.serial %}">{{ c.serial }}</a> 
       </li>
       {% endfor %}
 

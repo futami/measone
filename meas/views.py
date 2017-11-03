@@ -53,14 +53,12 @@ class SerialListView(generic.ListView):
     template_name = 'meas/serial_list.html'
     def get_queryset(self):
         return Condition.objects.values('serial').distinct()
-
-'''  
+  
 class SerialDetailView(generic.DetailView):
     #model = Condition
     template_name = 'meas/serial_detail.html'
     def get_queryset(self):
-        return Condition.objects.filter(serial = pk) 
-'''        
+        return Condition.objects.filter(serial = pk)         
 
 # get 1 object, filter multi objects
 from django.shortcuts import get_object_or_404
