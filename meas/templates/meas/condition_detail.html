@@ -5,7 +5,7 @@
 
   <p><strong>description:</strong> {{ condition.description }}</p>
   <p><strong>serial number:</strong> {{ condition.serial }}</p>
-  <p><strong>series:</strong> {{c.series}}</p>
+  <p><strong>series:</strong> {{c.series|date:"ymdHis"}}</p>
   <p><strong>condition:</strong> {{ condition.condition }}</p>
   <p><strong>lane:</strong> L{{ condition.lane }}</p>
   <p><strong>created:</strong> {{ condition.created_at }}</p> 

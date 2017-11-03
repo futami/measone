@@ -12,7 +12,7 @@
         <ul>
           <li><strong>description:</strong> {{ c.description }}</li>
           <li><strong>serial number:</strong> {{c.serial}}</li>
-          <li><strong>series:</strong> {{c.series}}</li>
+          <li><strong>series:</strong> {{c.series|date:"ymdHis"}}</li>
           <li><strong>condition:</strong> {{c.condition}}</li> 
           <li><strong>lane:</strong> {{c.lane}}</li> 
           <li><strong>created:</strong> ({{c.created_at}})</li>
