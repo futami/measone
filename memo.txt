@@ -33,6 +33,10 @@ INSTALLED_APPS = [
 >python manage.py makemigrations
 >python manage.py migrate
 
+データベース削除
+$ python manage.py flush --database=default
+
+
 管理者画面にデータベースエントリ追加 meas/admin.py
 from django.contrib import admin
 from .models import Entry
@@ -147,4 +151,48 @@ class Entry(models.Model):
     unit = models.CharField(max_length=16, blank=True)
     class Meta:
         verbose_name_plural = "entries"
+
+1つの項目を抽出するときは、get()
+複数の項目を抽出するときは、filter()
+
+views.pyに記載されているclassはview
+urls.pyのurl()の第2引数に入れるのはviewsetが必要
+view classのas_view()メソッドを使うと、viewsetになる
+
+
+viewには、関数ベースのビューとクラスベースのビューがある
+どちらを使うべきかという問題があるが、トレードオフがある
+関数ベースview：defで定義する、関数の中でGET,POSTなどのHTTPメソッドを分離する
+クラスベースview：classで定義する、classの中に、HTTPメソッドに対応するメソッドを作成する
+http://sandmark.hateblo.jp/entry/2017/10/02/164636
+http://sandmark.hateblo.jp/entry/2017/10/01/125909
+
+
+http://docs.djangoproject.jp/en/latest/topics/class-based-views.html
+Django 1.3 の前は、汎用ビューは関数として実装されていました。
+ここで述べる クラスベース汎用ビューが採用されたので、関数ベース汎用ビューは廃止されま した。
+
+
+https://developer.mozilla.org/en-US/docs/Learn/Server-side/Django/Generic_views
+url(r'^serials/(?P<pk>[-\w]+)$', views.SerialDetailView, name='serial_detail'),
+正規表現
+^ 文頭
+$ 文末
+\d 数値（0-9）
+\w 文字列（英小文字、英大文字、数値、アンダースコア）
+(?P<name>...) マッチしたパターンをname変数に格納してviewに渡す
+
+
+エラー対策
+
+TypeError at /meas/series/20171107173949
+__init__() takes 1 positional argument but 2 were given
+	urls.pyのurl()のviewにas_view()が付いていない
+
+NameError at /meas/series/20171107173949
+name 'pk' is not defined
+
+
+AttributeError at /meas/series/20171107162431
+Generic detail view SeriesDetailView must be called with either an object pk or a slug.
 

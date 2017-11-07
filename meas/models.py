@@ -9,7 +9,7 @@ class Condition(models.Model):
     condition = models.CharField(max_length=256)
     lane = models.IntegerField(default=999, blank=True)
     uuid = models.UUIDField(default=uuid.uuid4, unique=True)
-    series = models.DateTimeField()
+    series = models.CharField(max_length=256)
     created_at = models.DateTimeField(auto_now_add=True)
 
 class Entry(models.Model):

@@ -60,6 +60,21 @@ class SerialDetailView(generic.DetailView):
     def get_queryset(self):
         return Condition.objects.filter(serial = pk)         
 
+class SeriesListView(generic.ListView):
+    model = Condition
+    template_name = 'meas/series_list.html'
+    def get_queryset(self):
+        return Condition.objects.values('series').distinct()
+
+class SeriesDetailView(generic.DetailView):
+    model = Condition
+    template_name = 'meas/series_detail.html'
+    def get_queryset(self):
+#        return Condition.objects.filter(series = self.kwargs.get("series"))
+#        return Condition.objects.filter(serial = 'B301')
+#        dt = datetime.datetime.strptime(pk, "%y%m%d%H%M%S")
+        return Condition.objects.get(series = pk)
+
 # get 1 object, filter multi objects
 from django.shortcuts import get_object_or_404
 def SerialDetailView(request, pk):

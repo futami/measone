@@ -3,11 +3,11 @@
 {% block content %}
     
     {% if condition %}
-    <h1>{{condition.first.serial}} List</h1>
+    <h1>{{condition.first.series}} List</h1>
     <ul>
       {% for c in condition %}
       <li>
-        <h2>{{ c.serial }} / {{ c.description }}</h2>
+        <h2>{{ c.series }} / {{ c.description }}</h2>
         <ul>
             <li><strong>description:</strong> {{ c.description }}</li>
             <li><strong>serial number:</strong> {{c.serial}}</li>
