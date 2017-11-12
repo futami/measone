@@ -35,6 +35,7 @@ def index(request):
 # ListViewは、自動的に生成されるコンテキスト変数は <model>_list になります。
 # context_object_name 属性を与えると指定できる 
 from django.views import generic
+
 class ConditionListView(generic.ListView):
 #    template_name = 'app_name/index.html'
 #    context_object_name = 'latest_question_list'
