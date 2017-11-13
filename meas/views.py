@@ -12,8 +12,39 @@ class ConditionViewSet(viewsets.ModelViewSet):
     serializer_class = ConditionSerializer   
 
 class EntryViewSet(viewsets.ModelViewSet):
+    # https://stackoverflow.com/questions/33866396/django-rest-framework-json-array-post
+    # Django REST framework JSON array post
+    # https://stackoverflow.com/questions/19253363/named-json-array-in-django-rest-framework
+    # Named JSON array in Django REST Framework
+    # https://stackoverflow.com/questions/45917656/bulk-create-using-listserializer-of-django-rest-framework
+    # bulk create using ListSerializer of Django Rest Framework
+
     queryset = Entry.objects.all()
     serializer_class = EntrySerializer
+
+    def post(self, request, *args, **kwargs):
+        entry = request.data["entry"]
+        is_many = isinstance(entry, list)
+        if not is_many:
+            
+            return super(EntryViewSet, self).create(request, *args, **kwargs)
+        else:
+            serializer = self.get_serializer(data=entry, many=True)
+            serializer.is_valid(raise_exception=True)
+            self.create_list(serializer)
+            return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+    
+    #def create(self, validated_data):
+        #return Entry.objects.create(**validated_data)
+        #return super(EntryViewSet, self).create(**validated_data)
+
+    def create_list(self, serializer):
+        for new_entry in serializer.data:
+            #Entry.objects.create(**new_entry)
+            super(EntryViewSet, self).create(**new_entry)
+
+
+
 
 from django.views import generic
 class ConditionListView(generic.ListView):
