@@ -85,7 +85,7 @@ class ConditionAPITests(APITestCase):
         Ensure we can create a new account object.
         """
 #        url = reverse('condition-list')
-        data = {"condition": [{
+        data = [{
             "description": "B301_test L0 Nothing",
             "condition": "L0",
             "serial": "B301",
@@ -99,14 +99,14 @@ class ConditionAPITests(APITestCase):
             "serial": "B315",
             "lane": "4",
             "series": "20171109141055",
-            "uuid": "{685E790C-3E15-4882-A81F-917097FEFEDD}",
+            "uuid": "685E790C-3E15-4882-A81F-917097FEFEDD",
         }
-        ]}
+        ]
         response = self.client.post('/api/conditions/', data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(Condition.objects.count(), 1)
-        self.assertEqual(Condition.objects.get().serial, 'B301')
-        self.assertEqual(Condition.objects.get().series, '20171111085905')
+        self.assertEqual(Condition.objects.count(), 2)
+        #self.assertEqual(Condition.objects.get().serial, 'B301')
+        #self.assertEqual(Condition.objects.get().series, '20171111085905')
 
 class EntryAPITests(APITestCase):
     def test_create_entry(self):
@@ -141,21 +141,26 @@ class EntryAPITests(APITestCase):
         }
         response = self.client.post('/api/conditions/', data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        data = {"entry": [{
+        
+        data = [{
             "uuid": "1990e31b-928c-4619-9c64-acd882a416d9",
             "item": "SNR",
             "value": "6.94",
             "unit": "dB",
         },
         {
-            "uuid": "{685E790C-3E15-4882-A81F-917097FEFEDD}",
+            "uuid": "1990e31b-928c-4619-9c64-acd882a416d9",
             "item": "Vcc_PSU",
             "value": "3.698",
             "unit": "V"
-        }]}
+        }]
+
         response = self.client.post('/api/entries/', data, format='json')
+        self.assertEqual(Entry.objects.count(), 2)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(Entry.objects.count(), 1)
+
+
+        #self.assertEqual(Entry.objects.count(), 1)
 
 
 #        response = self.client.get('/users/4/')

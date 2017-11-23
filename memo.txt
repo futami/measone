@@ -196,3 +196,8 @@ name 'pk' is not defined
 AttributeError at /meas/series/20171107162431
 Generic detail view SeriesDetailView must be called with either an object pk or a slug.
 
+Anaconda/python仮想環境ファイルの置き場所、ソースコード
+C:\Users\ryu\AppData\Local\conda\conda\envs\djangorest
+C:\Users\ryu\AppData\Local\conda\conda\envs\djangorest\Lib\site-packages
+
+
