@@ -153,6 +153,8 @@ class EntryAPITests(APITestCase):
             "value": "3.698",
             "unit": "V"
         }]}
+        import pdb
+        pdb.set_trace()
         response = self.client.post('/api/entries/', data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(Entry.objects.count(), 1)
