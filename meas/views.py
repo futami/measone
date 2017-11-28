@@ -3,13 +3,32 @@ from django.shortcuts import render
 # Create your views here.
 import django_filters
 from rest_framework import viewsets, filters
+from rest_framework import status
+from rest_framework.response import Response
 
 from .models import Condition, Entry
 from .serializer import ConditionSerializer, EntrySerializer
 
 class ConditionViewSet(viewsets.ModelViewSet):
     queryset = Condition.objects.all()
-    serializer_class = ConditionSerializer   
+    serializer_class = ConditionSerializer  
+    #print('message 100')
+    
+    def create(self, request, *args, **kwargs):
+        conditions = request.data
+        is_many = isinstance(conditions, list)
+
+        if not is_many:
+            #import pdb; pdb.set_trace()
+            return super(ConditionViewSet, self).create(request, *args, **kwargs)
+        else:
+            for condition in conditions:
+                serializer = self.get_serializer(data=condition)
+                serializer.is_valid(raise_exception=True)
+                self.perform_create(serializer)
+                headers = self.get_success_headers(condition)
+            return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
 
 class EntryViewSet(viewsets.ModelViewSet):
     # https://stackoverflow.com/questions/33866396/django-rest-framework-json-array-post
@@ -22,29 +41,18 @@ class EntryViewSet(viewsets.ModelViewSet):
     queryset = Entry.objects.all()
     serializer_class = EntrySerializer
 
-    def post(self, request, *args, **kwargs):
-        entry = request.data["entry"]
-        is_many = isinstance(entry, list)
+    def create(self, request, *args, **kwargs):
+        entries = request.data
+        is_many = isinstance(entries, list)
         if not is_many:
-            
             return super(EntryViewSet, self).create(request, *args, **kwargs)
         else:
-            serializer = self.get_serializer(data=entry, many=True)
-            serializer.is_valid(raise_exception=True)
-            self.create_list(serializer)
+            for entry in entries:
+                serializer = self.get_serializer(data=entry)
+                serializer.is_valid(raise_exception=True)
+                self.perform_create(serializer)
+                headers = self.get_success_headers(entry)
             return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
-    
-    #def create(self, validated_data):
-        #return Entry.objects.create(**validated_data)
-        #return super(EntryViewSet, self).create(**validated_data)
-
-    def create_list(self, serializer):
-        for new_entry in serializer.data:
-            #Entry.objects.create(**new_entry)
-            super(EntryViewSet, self).create(**new_entry)
-
-
-
 
 from django.views import generic
 class ConditionListView(generic.ListView):

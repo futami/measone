@@ -196,3 +196,25 @@ name 'pk' is not defined
 AttributeError at /meas/series/20171107162431
 Generic detail view SeriesDetailView must be called with either an object pk or a slug.
 
+Anaconda/python仮想環境ファイルの置き場所、ソースコード
+C:\Users\ryu\AppData\Local\conda\conda\envs\djangorest
+C:\Users\ryu\AppData\Local\conda\conda\envs\djangorest\Lib\site-packages
+
+
+◆モデルフィールドリファレンス — Django 1.4 documentation
+http://docs.djangoproject.jp/en/latest/ref/models/fields.html
+全てのフィールド型で、以下の引数を指定できます。これらの引数はすべてオプショ ンです。
+null
+Trueにすると、Djangoは空の値をNULLとしてデータベースに入れます。デフォルト値はFalseです。
+空の文字列値はNULLではなく空文字列として保存されることに注意して下さい。
+null=Trueが使えるのは、文字列ではないフィールド型の場合だけです。
+nullはデータベースでの記録操作にのみかかわるパラメタなので、
+フォーム上で空の値を入力できるようにしたければblank=Trueも指定する必要があるでしょう。
+blank
+Trueにすると、フィールドの値を空白(blank)にできます。デフォルト値はFalseです。
+nullとは違うことに注意してください。
+nullが純粋にデータベース上の表現に関わる概念であるのに対し、blankとは値の検証(validation)に関わる概念です。
+あるフィールドにblank=Trueを指定すると、Djangoのadminサイト上で、空の値のエントリを作成できます。
+blank=Falseにすると、そのフィールドには必ず値を入れねばなりません。
+
+

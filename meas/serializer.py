@@ -9,5 +9,5 @@ class ConditionSerializer(serializers.ModelSerializer):
 class EntrySerializer(serializers.ModelSerializer):
     class Meta:
         model = Entry
-        fields = ('uuid', 'item', 'value', 'unit', 'created_at')
+        fields = ('uuid', 'item', 'value', 'text', 'unit', 'index', 'created_at')
         
