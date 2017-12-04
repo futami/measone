@@ -1,0 +1,19 @@
+{% extends "meas/base.html" %}
+
+{% block content %}
+    <h1>UUID List</h1>
+
+    {% if condition_list %}
+    <ul>
+
+      {% for c in condition_list %}
+      <li>
+        <a href="{% url 'uuid_detail' c.uuid %}">{{ c.uuid }}</a> 
+      </li>
+      {% endfor %}
+
+    </ul>
+    {% else %}
+      <p>There are no condition in the library.</p>
+    {% endif %}       
+{% endblock %}

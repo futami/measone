@@ -15,8 +15,10 @@ class Condition(models.Model):
 class Entry(models.Model):
     uuid = models.ForeignKey('Condition', to_field='uuid')
     item = models.CharField(max_length=64)
-    value = models.FloatField()
+    value = models.FloatField(null=True, blank=True)
+    text = models.CharField(default='', max_length=256)
     unit = models.CharField(max_length=16, blank=True)
+    index = models.IntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
     class Meta:
         verbose_name_plural = "entries"
