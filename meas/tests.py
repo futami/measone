@@ -37,12 +37,134 @@ from django.http import HttpRequest
 from django.template.loader import render_to_string
 from meas.views import ConditionListView
 
+from django.test import Client
+def create_condition_data():
+    client = Client()
+    data = {
+        "description": "B301_test L0 Nothing",
+        "condition": "L0",
+        "serial": "B301",
+        "lane": "0",
+        "series": "20171111085905",
+        "uuid": "1990e31b-928c-4619-9c64-acd882a416d9",
+    }
+    response = client.post('/api/conditions/', data, format='json')
+    
+def create_condition_and_entry_data():
+    client = Client()
+    data = {
+        "description": "B301_test L0 Nothing",
+        "condition": "L0",
+        "serial": "B301",
+        "lane": "0",
+        "series": "20171111085905",
+        "uuid": "1990e31b-928c-4619-9c64-acd882a416d9",
+    }
+    response = client.post('/api/conditions/', data, format='json')
+    data = {
+        "uuid": "1990e31b-928c-4619-9c64-acd882a416d9",
+        "item": "SNR",
+        "value": "6.94",
+        "unit": "dB",
+    }
+    response = client.post('/api/entries/', data, format='json')
+
+
 class HtmlTests(TestCase):
-    def test_condition_list_reqest_html(self):
+    def sample_test_condition_list_reqest_html(self):
         request = HttpRequest()
         response = ConditionListView(request)
         expected_html = render_to_string('meas/condition_list.html', {'books': []})
         self.assertEqual(response.content.decode(), expected_html)
+
+    def test_condition_list_request_html(self):
+        response = self.client.get('/meas/conditions/')
+        self.failUnlessEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'meas/condition_list.html')
+        #print(response['Content-Type'])         # text/html; charset=utf-8
+        self.assertEqual(response['Content-Type'], 'text/html; charset=utf-8')
+        #print(response.content)         # raw html
+        self.assertContains(response, 'There are no condition in the library.')
+        self.assertNotContains(response, 'description')
+        #self.assertNotContains(response, 'condition')
+        self.assertNotContains(response, 'series')
+        self.assertNotContains(response, 'uuid')
+        #print(response.context) # context is a variable name for django template 
+
+        create_condition_data()
+
+        response = self.client.get('/meas/conditions/')
+        self.failUnlessEqual(response.status_code, 200)
+        self.assertContains(response, 'description', count=1)
+        #self.assertContains(response, 'condition')
+        self.assertContains(response, 'series', count=1)
+        self.assertContains(response, 'uuid', count=1)
+        #print(response.context['series']) # django template context
+    
+    def test_condition_detail_request_html(self):
+        create_condition_data()
+
+        response = self.client.get('/meas/conditions/1')
+        self.failUnlessEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'meas/condition_detail.html')
+        #print(response.content)
+        #print(response.context)
+
+    #
+    # Entry
+    #
+    def atest_entry_list_request_html(self):
+        response = self.client.get('/meas/entries/')
+        self.failUnlessEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'meas/entry_list.html')
+
+    #
+    # Serial
+    #
+    def test_serial_list_request_html(self):
+        response = self.client.get('/meas/serials/')
+        self.failUnlessEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'meas/serial_list.html')
+        #print(response.content)
+        self.assertNotContains(response, 'description')
+
+        create_condition_and_entry_data()
+
+        response = self.client.get('/meas/serials/')
+        self.failUnlessEqual(response.status_code, 200)
+        #print(response.content)
+        self.assertContains(response, 'B301')
+        self.assertQuerysetEqual(response.context['condition_list'], ["{'serial': 'B301'}"])
+
+    
+    def test_serial_detail_request_html(self):
+        response = self.client.get('/meas/serials/B301')
+        self.failUnlessEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'meas/serial_detail.html')
+        self.assertNotContains(response, 'description')
+        #print(response.content)
+
+        create_condition_and_entry_data()
+
+        response = self.client.get('/meas/serials/B301')
+        self.failUnlessEqual(response.status_code, 200)
+        #print(response.content)
+        self.assertContains(response, 'description', count=1)
+        self.assertQuerysetEqual(response.context['condition'], ['<Condition: Condition object>'])
+        self.assertEqual(response.context['condition'].count, 1)
+
+    #
+    # Series
+    #
+    def test_series_list_request_html(self):
+        response = self.client.get('/meas/series/')
+        self.failUnlessEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'meas/series_list.html')
+    
+    def atest_series_detail_request_html(self):
+        response = self.client.get('/meas/series/20171111085905')
+        self.failUnlessEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'meas/series_detail.html')
 
 # http://www.django-rest-framework.org/api-guide/testing/
 # Testing
@@ -158,7 +280,7 @@ class EntryAPITests(APITestCase):
         }
         response = self.client.post('/api/conditions/', data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        
+
         data = [{
             "uuid": "1990e31b-928c-4619-9c64-acd882a416d9",
             "item": "SNR",
