@@ -14,7 +14,7 @@
   <div style="margin-left:20px;margin-top:20px">
     <h2>Entries</h2>
     {% for e in condition.entry_set.all %}
-    <p>{{e.item}}:&nbsp;{{e.value}}:&nbsp;{{e.unit}}</p>
+    <p>{{e.item}}: {{e.value}} {{e.unit}} {{e.text}} ({{e.index}})</p>
     {% endfor %}
 </div>
 {% endblock %}

@@ -38,7 +38,7 @@ from django.template.loader import render_to_string
 from meas.views import ConditionListView
 
 class HtmlTests(TestCase):
-    def a_test_condition_list_reqest_html(self):
+    def test_condition_list_reqest_html(self):
         request = HttpRequest()
         response = ConditionListView(request)
         expected_html = render_to_string('meas/condition_list.html', {'books': []})

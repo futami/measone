@@ -19,7 +19,8 @@
 
       {% for e in entry_list %}
       <li>
-        <a href="{% url 'detail' e.uuid.pk %}">{{ e.uuid.uuid }}</a> {{e.item}} {{e.value}} ({{e.unit}})
+        <a href="{% url 'detail' e.uuid.pk %}">{{ e.uuid.uuid }}</a> 
+        {{e.item}} {{e.value}} {{e.unit}} {{e.text}} ({{e.index}})
       </li>
       {% endfor %}
 

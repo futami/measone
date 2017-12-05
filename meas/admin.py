@@ -10,6 +10,6 @@ class ConditionAdmin(admin.ModelAdmin):
 
 @admin.register(Entry)
 class EntryAdmin(admin.ModelAdmin):
-    list_display =('item', 'value', 'unit', 'created_at')
+    list_display =('item', 'value', 'text', 'unit', 'index', 'created_at')
     list_filter = ['item']
 
