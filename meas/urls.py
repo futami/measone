@@ -18,8 +18,18 @@ urlpatterns += [
 ]
 
 urlpatterns += [
+    url(r'^serials01/$', views.Serial01Index, name='serial01_list'),
+    url(r'^serials01/(?P<serial_id>[-\w]+)$', views.Serial01Detail, name='serial01_detail'),
+]
+
+urlpatterns += [
+    url(r'^serials02/$', views.Serial02Index, name='serial02_list'),
+    url(r'^serials02/(?P<serial_id>[-\w]+)$', views.Serial02Detail, name='serial02_detail'),
+]
+
+urlpatterns += [
     url(r'^series/$', views.SeriesListView.as_view(), name='series_list'),
-    url(r'^series/(?P<pk>\w+)$', views.SeriesDetailView.as_view(), name='series_detail'),
+    url(r'^series/(?P<series_id>[-\w]+)$', views.SeriesDetailView, name='series_detail'),
 ]
 
 # EntryListView is a view, not a viewset. need .as_view()

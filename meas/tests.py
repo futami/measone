@@ -133,7 +133,7 @@ class HtmlTests(TestCase):
         response = self.client.get('/meas/serials/')
         self.failUnlessEqual(response.status_code, 200)
         #print(response.content)
-        self.assertContains(response, 'B301')
+        self.assertContains(response, '/meas/serials/B301')
         self.assertQuerysetEqual(response.context['condition_list'], ["{'serial': 'B301'}"])
 
     
@@ -151,7 +151,7 @@ class HtmlTests(TestCase):
         #print(response.content)
         self.assertContains(response, 'description', count=1)
         self.assertQuerysetEqual(response.context['condition'], ['<Condition: Condition object>'])
-        self.assertEqual(response.context['condition'].count, 1)
+        #self.assertEqual(response.context['condition'].count, 1)
 
     #
     # Series
@@ -160,11 +160,25 @@ class HtmlTests(TestCase):
         response = self.client.get('/meas/series/')
         self.failUnlessEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'meas/series_list.html')
-    
-    def atest_series_detail_request_html(self):
+        self.assertNotContains(response, 'description')
+
+        create_condition_and_entry_data()
+
+        response = self.client.get('/meas/series/')
+        self.failUnlessEqual(response.status_code, 200)
+        #print(response.content)
+        self.assertContains(response, '/meas/series/20171111085905')
+        self.assertQuerysetEqual(response.context['condition_list'], ["{'series': '20171111085905'}"])
+
+
+    def a_test_series_detail_request_html(self):
         response = self.client.get('/meas/series/20171111085905')
         self.failUnlessEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'meas/series_detail.html')
+        print(response.content)
+        self.assertNotContains(response, 'description')
+        
+
 
 # http://www.django-rest-framework.org/api-guide/testing/
 # Testing

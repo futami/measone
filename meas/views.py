@@ -95,9 +95,10 @@ class SerialListView(generic.ListView):
         return Condition.objects.values('serial').distinct()
   
 class SerialDetailView(generic.DetailView):
-    #model = Condition
+    model = Condition
     template_name = 'meas/serial_detail.html'
     def get_queryset(self):
+        import pdb; pdb.set_trace()
         return Condition.objects.filter(serial = pk)         
 
 class SeriesListView(generic.ListView):
@@ -113,7 +114,8 @@ class SeriesDetailView(generic.DetailView):
 #        return Condition.objects.filter(series = self.kwargs.get("series"))
 #        return Condition.objects.filter(serial = 'B301')
 #        dt = datetime.datetime.strptime(pk, "%y%m%d%H%M%S")
-        return Condition.objects.get(series = pk)
+        import pdb; pdb.set_trace()
+        return Condition.objects.filter(series = series_id)
 
 # get 1 object, filter multi objects
 from django.shortcuts import get_object_or_404
@@ -121,8 +123,32 @@ def SerialDetailView(request, pk):
     condition = Condition.objects.filter(serial=pk)
     #condition = get_object_or_404(Condition, serial = pk)
     return render(request, 'meas/serial_detail.html', {'condition': condition})
-    
 
+
+from django.http import HttpResponse
+from django.template import Context, loader
+
+def Serial01Index(request):
+    #return HttpResponse("Serial 01 Index")
+    object_list = Condition.objects.values('serial').distinct()
+    template = loader.get_template('meas/serial_list.html')
+    context = ({'condition_list': object_list,})
+    return HttpResponse(template.render(context))
+
+def Serial01Detail(request, sid):
+    return HttpResponse("Serial 01 Detail")
+
+from django.shortcuts import get_object_or_404, render_to_response
+
+def Serial02Index(request):
+    #return HttpResponse("Serial 02 Index")
+    object_list = Condition.objects.values('serial').distinct()
+    return render_to_response('meas/serial_list.html', {'condition_list': object_list})
+
+def Serial02Detail(request, serial_id):
+    #return HttpResponse("Serial 02 Detail")
+    condition = Condition.objects.filter(serial=serial_id)
+    return render_to_response('meas/serial_detail.html',{'condition': condition})
 
 class EntryListView(generic.ListView):
     model = Entry

@@ -1,3 +1,84 @@
+2017/12/06
+◆27.3. pdb — Python デバッガ — Python 3.6.3 ドキュメント
+https://docs.python.jp/3/library/pdb.html
+実行するプログラムをデバッガで分析する典型的な使い方
+import pdb; pdb.set_trace()
+s(tep)
+	現在の行を実行し、最初に実行可能なものがあらわれたときに (呼び出された関数の中か、現在の関数の次の行で) 停止します。
+n(ext)
+	現在の関数の次の行に達するか、あるいは関数が返るまで実行を継続します。 
+	(step が呼び出された関数の内部で停止するのに対し、 next は呼び出された関数を全速力で実行し、現在の関数内の次の行で停止するだけです。)
+c(ont(inue))
+	ブレークポイントに出会うまで、実行を継続します。
+l(ist) [first[, last]]
+	現在のファイルのソースコードを表示します。
+a(rgs)
+	現在の関数の引数リストをプリントします。
+p expression
+	現在のコンテキストにおいて expression を評価し、その値をプリントします。
+pp expression
+	p コマンドに似ていますが、式の値以外は pprint モジュールを使用して "pretty-print" されます。
+
+◆Python Web フレームワーク: 第 1 回 Django と Python を使って Web 開発
+https://www.ibm.com/developerworks/jp/linux/library/l-django/index.html
+filterメソッドとexcludeメソッドはQuerySetオブジェクトを返します。
+QuerySetオブジェクトは、つなげてチェーンにすることができ、さらにはジョインを実行することもできます。
+	from jobs.models import Job
+	from datetime import datetime
+	q3 = Job.objects.filter(pub_date__gte=datetime(2006, 1, 1))
+	q4 = q3.filter(location__city__exact="Cleveland", location__state__exact="Ohio")
+QuerySetは評価されるまでデータベースに対して実行しない
+Pythonの『スライス（slice）』機能と組み合わせると、実際のSQLクエリーで大幅にパフォーマンスを向上させています。
+	from jobs.models import Job
+	for job in Job.objects.all()[5:15]
+		print job
+QuerySetの中のレコード数を数えるには、countメソッドを使います。
+	from jobs.models import Job
+	print "Count = ", Job.objects.count()       # GOOD!
+	print "Count = ", len(Job.objects.all())    # BAD!
+
+◆Anaconda/python仮想環境ファイルの置き場所、ソースコード
+C:\Users\ryu\AppData\Local\conda\conda\envs\djangorest
+C:\Users\ryu\AppData\Local\conda\conda\envs\djangorest\Lib\site-packages
+
+
+◆モデルフィールドリファレンス — Django 1.4 documentation
+http://docs.djangoproject.jp/en/latest/ref/models/fields.html
+全てのフィールド型で、以下の引数を指定できます。これらの引数はすべてオプショ ンです。
+null
+Trueにすると、Djangoは空の値をNULLとしてデータベースに入れます。デフォルト値はFalseです。
+空の文字列値はNULLではなく空文字列として保存されることに注意して下さい。
+null=Trueが使えるのは、文字列ではないフィールド型の場合だけです。
+nullはデータベースでの記録操作にのみかかわるパラメタなので、
+フォーム上で空の値を入力できるようにしたければblank=Trueも指定する必要があるでしょう。
+blank
+Trueにすると、フィールドの値を空白(blank)にできます。デフォルト値はFalseです。
+nullとは違うことに注意してください。
+nullが純粋にデータベース上の表現に関わる概念であるのに対し、blankとは値の検証(validation)に関わる概念です。
+あるフィールドにblank=Trueを指定すると、Djangoのadminサイト上で、空の値のエントリを作成できます。
+blank=Falseにすると、そのフィールドには必ず値を入れねばなりません。
+
+
+◆anacondaではない公式python
+仮想環境の有効化
+>C:\Users\s920342\Documents\python\django\Scripts\activate
+サーバ起動
+>py manage.py runserver 0.0.0.0:8000
+
+◆データベース構築
+mysite/settings.py
+INSTALLED_APPS = [
+    ...
+    'meas',
+]
+>python manage.py makemigrations
+>python manage.py migrate
+
+データベース削除
+$ python manage.py flush --database=default
+
+
+
 2017/09/08
 
 >conda create -n djangorest django
@@ -24,17 +105,7 @@ class Entry(models.Model):
     value = models.FloatField()
     unit = models.CharField(max_length=16, blank=True)
 
-データベース構築
-mysite/settings.py
-INSTALLED_APPS = [
-    ...
-    'meas',
-]
->python manage.py makemigrations
->python manage.py migrate
 
-データベース削除
-$ python manage.py flush --database=default
 
 
 管理者画面にデータベースエントリ追加 meas/admin.py
@@ -195,32 +266,3 @@ name 'pk' is not defined
 
 AttributeError at /meas/series/20171107162431
 Generic detail view SeriesDetailView must be called with either an object pk or a slug.
-
-Anaconda/python仮想環境ファイルの置き場所、ソースコード
-C:\Users\ryu\AppData\Local\conda\conda\envs\djangorest
-C:\Users\ryu\AppData\Local\conda\conda\envs\djangorest\Lib\site-packages
-
-
-◆モデルフィールドリファレンス — Django 1.4 documentation
-http://docs.djangoproject.jp/en/latest/ref/models/fields.html
-全てのフィールド型で、以下の引数を指定できます。これらの引数はすべてオプショ ンです。
-null
-Trueにすると、Djangoは空の値をNULLとしてデータベースに入れます。デフォルト値はFalseです。
-空の文字列値はNULLではなく空文字列として保存されることに注意して下さい。
-null=Trueが使えるのは、文字列ではないフィールド型の場合だけです。
-nullはデータベースでの記録操作にのみかかわるパラメタなので、
-フォーム上で空の値を入力できるようにしたければblank=Trueも指定する必要があるでしょう。
-blank
-Trueにすると、フィールドの値を空白(blank)にできます。デフォルト値はFalseです。
-nullとは違うことに注意してください。
-nullが純粋にデータベース上の表現に関わる概念であるのに対し、blankとは値の検証(validation)に関わる概念です。
-あるフィールドにblank=Trueを指定すると、Djangoのadminサイト上で、空の値のエントリを作成できます。
-blank=Falseにすると、そのフィールドには必ず値を入れねばなりません。
-
-
-◆anacondaではない公式python
-仮想環境の有効化
->C:\Users\s920342\Documents\python\django\Scripts\activate
-サーバ起動
->py manage.py runserver 0.0.0.0:8000
-
