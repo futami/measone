@@ -1,19 +1,18 @@
 from django.db import models
 
 # Create your models here.
-import uuid
 
 class Condition(models.Model):
     description = models.CharField(max_length=256)
     serial = models.CharField(max_length=256, blank=True)
     condition = models.CharField(max_length=256)
     lane = models.IntegerField(default=999, blank=True)
-    uuid = models.UUIDField(default=uuid.uuid4, unique=True)
+    ulid = models.CharField(max_length=30, unique=True)
     series = models.CharField(max_length=256)
     created_at = models.DateTimeField(auto_now_add=True)
 
 class Entry(models.Model):
-    uuid = models.ForeignKey('Condition', to_field='uuid')
+    ulid = models.ForeignKey('Condition', to_field='ulid')
     item = models.CharField(max_length=64)
     value = models.FloatField(null=True, blank=True)
     text = models.CharField(default='', max_length=256)

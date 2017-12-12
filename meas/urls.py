@@ -29,7 +29,7 @@ urlpatterns += [
 
 urlpatterns += [
     url(r'^series/$', views.SeriesListView.as_view(), name='series_list'),
-    url(r'^series/(?P<series_id>[-\w]+)$', views.SeriesDetailView, name='series_detail'),
+    url(r'^series/(?P<series_id>\d+)$', views.SeriesDetailView, name='series_detail'),
 ]
 
 # EntryListView is a view, not a viewset. need .as_view()

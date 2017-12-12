@@ -38,37 +38,39 @@ from django.template.loader import render_to_string
 from meas.views import ConditionListView
 
 from django.test import Client
-def create_condition_data():
-    client = Client()
-    data = {
-        "description": "B301_test L0 Nothing",
-        "condition": "L0",
-        "serial": "B301",
-        "lane": "0",
-        "series": "20171111085905",
-        "uuid": "1990e31b-928c-4619-9c64-acd882a416d9",
-    }
-    response = client.post('/api/conditions/', data, format='json')
-    
-def create_condition_and_entry_data():
-    client = Client()
-    data = {
-        "description": "B301_test L0 Nothing",
-        "condition": "L0",
-        "serial": "B301",
-        "lane": "0",
-        "series": "20171111085905",
-        "uuid": "1990e31b-928c-4619-9c64-acd882a416d9",
-    }
-    response = client.post('/api/conditions/', data, format='json')
-    data = {
-        "uuid": "1990e31b-928c-4619-9c64-acd882a416d9",
-        "item": "SNR",
-        "value": "6.94",
-        "unit": "dB",
-    }
-    response = client.post('/api/entries/', data, format='json')
 
+condition_data = {
+    "description":"B322_LT_TxAmp","serial":"B322","condition":"TxAmp:0 EyeRatio:0","lane":0,
+    "ulid":"01C1162J3GTH9VBKVV6ZQW2PXZ","series":"20171211064239"
+}
+
+condition_multi_data = [
+    {
+        "description":"B322_LT_TxAmp","serial":"B322","condition":"TxAmp:0 EyeRatio:0","lane":0,
+        "ulid":"01C1162J3GTH9VBKVV6ZQW2PXZ","series":"20171211064239"
+    },
+    {
+        "description":"B322_LT_TxAmp","serial":"B322","condition":"TxAmp:0 EyeRatio:1","lane":0,
+        "ulid":"01C11669PSMCFBWF12QVX4MHTF","series":"20171211064239"
+    },
+    {
+        "description":"B322_LT_TxAmp","serial":"B322","condition":"TxAmp:0 EyeRatio:2","lane":0,
+        "ulid":"01C1169MHXA4HQVF2QDVYRJH4V","series":"20171211064239"
+    },
+]
+
+entry_data1 = {"item":"MON_Temp","value":7.69921875,"unit":"degC","ulid":"01C1162J3GTH9VBKVV6ZQW2PXZ"}
+entry_data2 = {"item":"MON_Vcc","value":3.2033,"unit":"V","ulid":"01C1162J3GTH9VBKVV6ZQW2PXZ"}
+entry_data3 = {"item":"LDtempBlue","value":44.9921875,"unit":"degC","ulid":"01C1162J3GTH9VBKVV6ZQW2PXZ"}
+
+entry_data_index1 = {"item":"frames","value":55485991,"ulid":"01C1162J3GTH9VBKVV6ZQW2PXZ","index":1}
+entry_data_index2 = {"item":"frames","value":55493994,"ulid":"01C1162J3GTH9VBKVV6ZQW2PXZ","index":2}
+entry_data_index3 = {"item":"frames","value":54768891,"ulid":"01C1162J3GTH9VBKVV6ZQW2PXZ","index":3}
+
+entry_multi_data = [
+    {"item":"frames","value":55485991,"ulid":"01C1162J3GTH9VBKVV6ZQW2PXZ","index":1},
+    {"item":"uncorr","value":0,"ulid":"01C1162J3GTH9VBKVV6ZQW2PXZ","index":1},
+]
 
 class HtmlTests(TestCase):
     def sample_test_condition_list_reqest_html(self):
@@ -88,21 +90,23 @@ class HtmlTests(TestCase):
         self.assertNotContains(response, 'description')
         #self.assertNotContains(response, 'condition')
         self.assertNotContains(response, 'series')
-        self.assertNotContains(response, 'uuid')
+        self.assertNotContains(response, 'ulid')
         #print(response.context) # context is a variable name for django template 
 
-        create_condition_data()
-
+        client = Client()
+        response = client.post('/api/conditions/', condition_data, format='json')
+        
         response = self.client.get('/meas/conditions/')
         self.failUnlessEqual(response.status_code, 200)
         self.assertContains(response, 'description', count=1)
         #self.assertContains(response, 'condition')
         self.assertContains(response, 'series', count=1)
-        self.assertContains(response, 'uuid', count=1)
+        self.assertContains(response, 'ulid', count=1)
         #print(response.context['series']) # django template context
     
     def test_condition_detail_request_html(self):
-        create_condition_data()
+        client = Client()
+        response = client.post('/api/conditions/', condition_data, format='json')
 
         response = self.client.get('/meas/conditions/1')
         self.failUnlessEqual(response.status_code, 200)
@@ -128,25 +132,29 @@ class HtmlTests(TestCase):
         #print(response.content)
         self.assertNotContains(response, 'description')
 
-        create_condition_and_entry_data()
+        client = Client()
+        response = client.post('/api/conditions/', condition_data, format='json')
+        response = client.post('/api/entries/', entry_data1, format='json')
 
         response = self.client.get('/meas/serials/')
         self.failUnlessEqual(response.status_code, 200)
         #print(response.content)
-        self.assertContains(response, '/meas/serials/B301')
-        self.assertQuerysetEqual(response.context['condition_list'], ["{'serial': 'B301'}"])
+        self.assertContains(response, '/meas/serials/B322')
+        self.assertQuerysetEqual(response.context['condition_list'], ["{'serial': 'B322'}"])
 
     
     def test_serial_detail_request_html(self):
-        response = self.client.get('/meas/serials/B301')
+        response = self.client.get('/meas/serials/B322')
         self.failUnlessEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'meas/serial_detail.html')
         self.assertNotContains(response, 'description')
         #print(response.content)
 
-        create_condition_and_entry_data()
+        client = Client()
+        response = client.post('/api/conditions/', condition_data, format='json')
+        response = client.post('/api/entries/', entry_data1, format='json')
 
-        response = self.client.get('/meas/serials/B301')
+        response = self.client.get('/meas/serials/B322')
         self.failUnlessEqual(response.status_code, 200)
         #print(response.content)
         self.assertContains(response, 'description', count=1)
@@ -162,20 +170,22 @@ class HtmlTests(TestCase):
         self.assertTemplateUsed(response, 'meas/series_list.html')
         self.assertNotContains(response, 'description')
 
-        create_condition_and_entry_data()
+        client = Client()
+        response = client.post('/api/conditions/', condition_data, format='json')
+        response = client.post('/api/entries/', entry_data1, format='json')
 
         response = self.client.get('/meas/series/')
         self.failUnlessEqual(response.status_code, 200)
         #print(response.content)
-        self.assertContains(response, '/meas/series/20171111085905')
-        self.assertQuerysetEqual(response.context['condition_list'], ["{'series': '20171111085905'}"])
+        self.assertContains(response, '/meas/series/20171211064239')
+        self.assertQuerysetEqual(response.context['condition_list'], ["{'series': '20171211064239'}"])
 
 
-    def a_test_series_detail_request_html(self):
-        response = self.client.get('/meas/series/20171111085905')
+    def test_series_detail_request_html(self):
+        response = self.client.get('/meas/series/20171211064239')
         self.failUnlessEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'meas/series_detail.html')
-        print(response.content)
+        #print(response.content)
         self.assertNotContains(response, 'description')
         
 
@@ -202,169 +212,94 @@ class ConditionAPITests(APITestCase):
         Ensure we can create a new account object.
         """
 #        url = reverse('condition-list')
-        data = {
-            "description": "B301_test L0 Nothing",
-            "condition": "L0",
-            "serial": "B301",
-            "lane": "0",
-            "series": "20171111085905",
-            "uuid": "1990e31b-928c-4619-9c64-acd882a416d9",
-        }
-        response = self.client.post('/api/conditions/', data, format='json')
+
+        client = Client()
+        response = client.post('/api/conditions/', condition_data, format='json')
+
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(Condition.objects.count(), 1)
-        self.assertEqual(Condition.objects.get().serial, 'B301')
-        self.assertEqual(Condition.objects.get().series, '20171111085905')
+        self.assertEqual(Condition.objects.get().serial, 'B322')
+        self.assertEqual(Condition.objects.get().series, '20171211064239')
 
     def test_create_multi_conditions(self):
         """
         Ensure we can create a new account object.
         """
 #        url = reverse('condition-list')
-        data = [{
-            "description": "B301_test L0 Nothing",
-            "condition": "L0",
-            "serial": "B301",
-            "lane": "0",
-            "series": "20171111085905",
-            "uuid": "1990e31b-928c-4619-9c64-acd882a416d9",
-        },
-        {
-            "description": "B315_test",
-            "condition": "L3",
-            "serial": "B315",
-            "lane": "4",
-            "series": "20171109141055",
-            "uuid": "685E790C-3E15-4882-A81F-917097FEFEDD",
-        }
-        ]
-        response = self.client.post('/api/conditions/', data, format='json')
+        response = self.client.post('/api/conditions/', condition_multi_data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(Condition.objects.count(), 2)
-        #self.assertEqual(Condition.objects.get().serial, 'B301')
+        self.assertEqual(Condition.objects.count(), 3)
+        #self.assertEqual(Condition.objects.get().serial, 'B322')
         #self.assertEqual(Condition.objects.get().series, '20171111085905')
 
 class EntryAPITests(APITestCase):
     def test_create_entry(self):
-        data = {
-            "description": "B301_test L0 Nothing",
-            "condition": "L0",
-            "serial": "B301",
-            "lane": "0",
-            "series": "20171111085905",
-            "uuid": "1990e31b-928c-4619-9c64-acd882a416d9",
-        }
-        response = self.client.post('/api/conditions/', data, format='json')
+        client = Client()
+        response = client.post('/api/conditions/', condition_data, format='json')    
+
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        data = {
-            "uuid": "1990e31b-928c-4619-9c64-acd882a416d9",
-            "item": "SNR",
-            "value": "6.94",
-            "unit": "dB",
-        }
-        response = self.client.post('/api/entries/', data, format='json')
+
+        response = client.post('/api/entries/', entry_data1, format='json')
+
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(Entry.objects.count(), 1)
-        data = {
-            "uuid": "1990e31b-928c-4619-9c64-acd882a416d9",
-            "item": "ScoreBER",
-            "value": "20.5",
-        }
-        response = self.client.post('/api/entries/', data, format='json')
+
+        response = client.post('/api/entries/', entry_data2, format='json')
+
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(Entry.objects.count(), 2)
-        data = {
-            "uuid": "1990e31b-928c-4619-9c64-acd882a416d9",
-            "item": "Computer",
-            "text": "WS130501",
-        }
-        response = self.client.post('/api/entries/', data, format='json')
+
+        response = client.post('/api/entries/', entry_data3, format='json')
+
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(Entry.objects.count(), 3)        
 
 
     def test_create_multi_entries(self):
-        data = {
-            "description": "B301_test L0 Nothing",
-            "condition": "L0",
-            "serial": "B301",
-            "lane": "0",
-            "series": "20171111085905",
-            "uuid": "1990e31b-928c-4619-9c64-acd882a416d9",
-        }
-        response = self.client.post('/api/conditions/', data, format='json')
+
+        client = Client()
+        response = client.post('/api/conditions/', condition_data, format='json')
+
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
         data = [{
-            "uuid": "1990e31b-928c-4619-9c64-acd882a416d9",
-            "item": "SNR",
-            "value": "6.94",
-            "unit": "dB",
+            "item":"frames",
+            "value":55485991,
+            "ulid":"01C1162J3GTH9VBKVV6ZQW2PXZ",
+            "index":1
         },
         {
-            "uuid": "1990e31b-928c-4619-9c64-acd882a416d9",
-            "item": "Vcc_PSU",
-            "value": "3.698",
-            "unit": "V",
-        }]
+            "item":"uncorr",
+            "value":0,
+            "ulid":"01C1162J3GTH9VBKVV6ZQW2PXZ",
+            "index":1
+        },]
+
 
         response = self.client.post('/api/entries/', data, format='json')
         self.assertEqual(Entry.objects.count(), 2)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
     def test_create_entry_with_index(self):
-        data = {
-            "description": "B322_BER_test",
-            "condition": "BER",
-            "serial": "B322",
-            "lane": "5",
-            "series": "20171111085905",
-            "uuid": "33d173d3-d421-4b44-943b-8d494369a990",
-        }
-        response = self.client.post('/api/conditions/', data, format='json')
+        client = Client()
+        response = client.post('/api/conditions/', condition_data, format='json')
+
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
-        data = {
-            "uuid": "33d173d3-d421-4b44-943b-8d494369a990",
-            "item": "Pre-FEC_ber",
-            "value": "7.02158395370125e-08",
-            "index": "1",
-        }
-        response = self.client.post('/api/entries/', data, format='json')
+        response = client.post('/api/entries/', entry_data_index1, format='json')
+
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(Entry.objects.count(), 1)
 
-        data = {
-            "uuid": "33d173d3-d421-4b44-943b-8d494369a990",
-            "item": "OpticalPower",
-            "value": "-18.44104",
-            "unit": "dBm",
-            "index": "1",
-        }
-        response = self.client.post('/api/entries/', data, format='json')
+        response = client.post('/api/entries/', entry_data_index2, format='json')
+
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(Entry.objects.count(), 2)
 
-        data = {
-            "uuid": "33d173d3-d421-4b44-943b-8d494369a990",
-            "item": "Pre-FEC_ber",
-            "value": "3.95389372576066e-08",
-            "index": "2",
-        }
-        response = self.client.post('/api/entries/', data, format='json')
+        response = client.post('/api/entries/', entry_data_index3, format='json')
+
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(Entry.objects.count(), 3)
-
-        data = {
-            "uuid": "33d173d3-d421-4b44-943b-8d494369a990",
-            "item": "OpticalPower",
-            "value": "-19.41626",
-            "unit": "dBm",
-            "index": "2",
-        }
-        response = self.client.post('/api/entries/', data, format='json')
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(Entry.objects.count(), 4)
 
         #self.assertEqual(Entry.objects.count(), 1)
 
