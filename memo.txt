@@ -1,4 +1,12 @@
 2017/12/06
+
+◆参考サイト
+Python Web フレームワーク: 第 1 回 Django と Python を使って Web 開発
+https://www.ibm.com/developerworks/jp/linux/library/l-django/index.html
+Python Django入門 (4) - Qiita
+https://qiita.com/kaki_k/items/6e17597804437ef170ae#django-%E3%81%AE-crud
+
+
 ◆27.3. pdb — Python デバッガ — Python 3.6.3 ドキュメント
 https://docs.python.jp/3/library/pdb.html
 実行するプログラムをデバッガで分析する典型的な使い方
@@ -65,7 +73,18 @@ blank=Falseにすると、そのフィールドには必ず値を入れねばな
 サーバ起動
 >py manage.py runserver 0.0.0.0:8000
 
-◆データベース構築
+◆データベース作成、スーパーユーザー作成
+>python manage.py migrate meas
+>python manage.py createsuperuser meas
+
+user:admin
+pass:adminadmin
+
+サーバ起動
+>python manage.py runserver
+http://127.0.0.1:8000/
+
+◆データベース再構築
 mysite/settings.py
 INSTALLED_APPS = [
     ...

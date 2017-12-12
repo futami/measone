@@ -1,7 +1,7 @@
 {% extends "meas/base.html" %}
 
 {% block content %}
-  <h1>Name: {{ condition.description }}</h1>
+<h1>Name: {{ condition.description }}</h1>
 
   <p><strong>description:</strong> {{ condition.description }}</p>
   <p><strong>serial number:</strong> {{ condition.serial }}</p>
@@ -16,5 +16,5 @@
     {% for e in condition.entry_set.all %}
     <p>{{e.item}}: {{e.value}} {{e.unit}} {{e.text}} ({{e.index}})</p>
     {% endfor %}
-  </div>
+  </div>   
 {% endblock %}

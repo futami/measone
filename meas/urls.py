@@ -32,6 +32,12 @@ urlpatterns += [
     url(r'^series/(?P<series_id>\d+)$', views.SeriesDetailView, name='series_detail'),
 ]
 
+urlpatterns += [
+    url(r'^ulid/$', views.UlidListView.as_view(), name='ulid_list'),
+    url(r'^ulid/(?P<ulid>\w+)$', views.UlidDetailView, name='ulid_detail'),
+]
+
+
 # EntryListView is a view, not a viewset. need .as_view()
 urlpatterns += [
     url(r'^entries/$', views.EntryListView.as_view(), name='entry_list'),

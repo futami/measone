@@ -1,14 +1,14 @@
 {% extends "meas/base.html" %}
 
 {% block content %}
-    <h1>UUID List</h1>
+    <h1>ULID List</h1>
 
     {% if condition_list %}
     <ul>
 
       {% for c in condition_list %}
       <li>
-        <a href="{% url 'uuid_detail' c.uuid %}">{{ c.uuid }}</a> 
+        <a href="{% url 'ulid_detail' c.ulid %}">{{ c.ulid }}</a> 
       </li>
       {% endfor %}
 

@@ -180,15 +180,59 @@ class HtmlTests(TestCase):
         self.assertContains(response, '/meas/series/20171211064239')
         self.assertQuerysetEqual(response.context['condition_list'], ["{'series': '20171211064239'}"])
 
-
     def test_series_detail_request_html(self):
         response = self.client.get('/meas/series/20171211064239')
         self.failUnlessEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'meas/series_detail.html')
         #print(response.content)
         self.assertNotContains(response, 'description')
-        
 
+        client = Client()
+        response = client.post('/api/conditions/', condition_data, format='json')
+        response = client.post('/api/entries/', entry_data1, format='json')
+
+        response = self.client.get('/meas/series/20171211064239')
+        self.failUnlessEqual(response.status_code, 200)
+        #print(response.content)
+        self.assertContains(response, 'description', count=1)
+        self.assertQuerysetEqual(response.context['condition'], ['<Condition: Condition object>'])        
+
+
+    #
+    # ULID
+    #
+    def test_ulid_list_request_html(self):
+        response = self.client.get('/meas/ulid/')
+        self.failUnlessEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'meas/ulid_list.html')
+        self.assertNotContains(response, 'description')
+
+        client = Client()
+        response = client.post('/api/conditions/', condition_data, format='json')
+        response = client.post('/api/entries/', entry_data1, format='json')
+
+        response = self.client.get('/meas/ulid/')
+        self.failUnlessEqual(response.status_code, 200)
+        #print(response.content)
+        self.assertContains(response, '/meas/ulid/01C1162J3GTH9VBKVV6ZQW2PXZ')
+        self.assertQuerysetEqual(response.context['condition_list'], ["{'ulid': '01C1162J3GTH9VBKVV6ZQW2PXZ'}"])
+    
+    def test_ulid_detail_request_html(self):
+        response = self.client.get('/meas/ulid/01C1162J3GTH9VBKVV6ZQW2PXZ')
+        self.failUnlessEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'meas/ulid_detail.html')
+        #print(response.content)
+        self.assertNotContains(response, 'description')
+
+        client = Client()
+        response = client.post('/api/conditions/', condition_data, format='json')
+        response = client.post('/api/entries/', entry_data1, format='json')
+
+        response = self.client.get('/meas/ulid/01C1162J3GTH9VBKVV6ZQW2PXZ')
+        self.failUnlessEqual(response.status_code, 200)
+        #print(response.content)
+        self.assertContains(response, 'description', count=1)
+        self.assertQuerysetEqual(response.context['condition'], ['<Condition: Condition object>'])      
 
 # http://www.django-rest-framework.org/api-guide/testing/
 # Testing
@@ -198,8 +242,6 @@ from rest_framework.test import APIRequestFactory
 # Using the standard RequestFactory API to create a form POST request
 factory = APIRequestFactory()
 request = factory.post('/notes/', {'title': 'new idea'})
-
-
 
 from django.urls import reverse
 from rest_framework import status

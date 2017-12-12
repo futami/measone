@@ -94,44 +94,34 @@ class SerialListView(generic.ListView):
     def get_queryset(self):
         return Condition.objects.values('serial').distinct()
 
-''' 
-class SerialDetailView(generic.DetailView):
-    model = Condition
-    template_name = 'meas/serial_detail.html'
-    def get_queryset(self):
-        import pdb; pdb.set_trace()
-        return Condition.objects.filter(serial = pk)         
-'''
-
 class SeriesListView(generic.ListView):
     model = Condition
     template_name = 'meas/series_list.html'
     def get_queryset(self):
         return Condition.objects.values('series').distinct()
 
-'''
-class SeriesDetailView(generic.DetailView):
+class UlidListView(generic.ListView):
     model = Condition
-    template_name = 'meas/series_detail.html'
+    template_name = 'meas/ulid_list.html'
     def get_queryset(self):
-#        return Condition.objects.filter(series = self.kwargs.get("series"))
-#        return Condition.objects.filter(serial = 'B301')
-#        dt = datetime.datetime.strptime(pk, "%y%m%d%H%M%S")
-        import pdb; pdb.set_trace()
-        return Condition.objects.filter(series = series_id)
-'''
+        return Condition.objects.values('ulid').distinct()
+
+# get 1 object, filter multi objects
+# from django.shortcuts import get_object_or_404
 
 def SeriesDetailView(request, series_id):
     condition = Condition.objects.filter(series=series_id)
     return render(request, 'meas/series_detail.html', {'condition': condition})
 
-
-# get 1 object, filter multi objects
-from django.shortcuts import get_object_or_404
 def SerialDetailView(request, pk):
     condition = Condition.objects.filter(serial=pk)
     #condition = get_object_or_404(Condition, serial = pk)
     return render(request, 'meas/serial_detail.html', {'condition': condition})
+
+# one ULID has one condition
+def UlidDetailView(request, ulid):
+    condition = Condition.objects.get(ulid=ulid)
+    return render(request, 'meas/ulid_detail.html', {'condition': condition})
 
 
 from django.http import HttpResponse
