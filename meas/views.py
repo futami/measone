@@ -120,8 +120,18 @@ def SerialDetailView(request, pk):
 
 # one ULID has one condition
 def UlidDetailView(request, ulid):
-    condition = Condition.objects.get(ulid=ulid)
-    return render(request, 'meas/ulid_detail.html', {'condition': condition})
+    # Object output
+    #condition = Condition.objects.get(ulid=ulid)
+    condition = get_object_or_404(Condition, ulid=ulid)
+    # Queryset output
+    #condition = Condition.objects.filter(ulid=ulid)
+    
+    entry = Entry.objects.filter(ulid=ulid)
+    power = Entry.objects.filter(ulid=ulid, item='OpticalPower')
+    ber = Entry.objects.filter(ulid=ulid, item='Pre-FEC_ber')
+    #import pdb; pdb.set_trace()
+    #return render(request, 'meas/ulid_detail.html', {'condition': condition})
+    return render(request, 'meas/ulid_detail.html', {'condition': condition, 'entry': entry, 'power': power, 'ber': ber})
 
 
 from django.http import HttpResponse
