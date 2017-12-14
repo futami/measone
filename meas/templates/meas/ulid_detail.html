@@ -13,11 +13,21 @@
   <p><strong>ulid:</strong> {{ condition.ulid }}</p> 
 
   <div style="margin-left:20px;margin-top:20px">
+
+    <h2>Power</h2>
+    {% for e in power %}
+    <p>{{e.item}}: {{e.value}} {{e.unit}} {{e.text}} ({{e.index}})</p>
+    {% endfor %}
+    <h2>BER</h2>
+    {% for e in ber %}
+    <p>{{e.item}}: {{e.value}} {{e.unit}} {{e.text}} ({{e.index}})</p>
+    {% endfor %}
     <h2>Entries</h2>
     {% for e in entry %}
     <p>{{e.item}}: {{e.value}} {{e.unit}} {{e.text}} ({{e.index}})</p>
     {% endfor %}
-  </div>   
+  </div>
+
 {% else %}
   <p>There are no condition in the library.</p>
 {% endif %}  

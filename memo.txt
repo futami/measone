@@ -1,3 +1,11 @@
+2017/12/14(木)
+
+◆anacondaにmatplotilbインストールが必要
+> conda install matplotlib
+
+◆git 強制的にリモートリポジトリのmasterに合わせる
+$ git reset --hard origin/master
+
 2017/12/06
 
 ◆参考サイト

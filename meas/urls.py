@@ -1,5 +1,6 @@
 from rest_framework import routers
 from . import views
+from . import charts
 
 router = routers.DefaultRouter()
 router.register(r'conditions', views.ConditionViewSet)
@@ -42,6 +43,13 @@ urlpatterns += [
 urlpatterns += [
     url(r'^entries/$', views.EntryListView.as_view(), name='entry_list'),
     url(r'^entries/(?P<pk>\d+)$', views.EntryDetailView.as_view(), name='entry_detail'),
+]
+
+urlpatterns += [
+    url(r'^charts/graph1$', charts.graph1, name='graph1'),
+    url(r'^charts/graph2$', charts.graph2, name='graph2'),
+    url(r'^charts/graph3$', charts.graph3, name='graph3'),
+    url(r'^charts/(?P<ulid>\w+)$', charts.UlidBerChartView, name='ulid_ber_chart'),
 ]
 
 # はじめての Django アプリ作成、その 3 | Django documentation | Django 
