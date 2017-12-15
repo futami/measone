@@ -98,13 +98,14 @@ class SeriesListView(generic.ListView):
     model = Condition
     template_name = 'meas/series_list.html'
     def get_queryset(self):
-        return Condition.objects.values('series').distinct()
+        #import pdb; pdb.set_trace()
+        return Condition.objects.values('series', 'description').distinct()
 
 class UlidListView(generic.ListView):
     model = Condition
     template_name = 'meas/ulid_list.html'
-    def get_queryset(self):
-        return Condition.objects.values('ulid').distinct()
+    #def get_queryset(self):
+    #    return Condition.objects.values('ulid').distinct()
 
 # get 1 object, filter multi objects
 # from django.shortcuts import get_object_or_404
@@ -117,6 +118,7 @@ def SerialDetailView(request, pk):
     condition = Condition.objects.filter(serial=pk)
     #condition = get_object_or_404(Condition, serial = pk)
     return render(request, 'meas/serial_detail.html', {'condition': condition})
+    #return render(request, 'meas/series_list.html', {'condition': condition})
 
 # one ULID has one condition
 def UlidDetailView(request, ulid):

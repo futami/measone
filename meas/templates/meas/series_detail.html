@@ -3,23 +3,12 @@
 {% block content %}
     
     {% if condition %}
-    <h1>{{condition.first.series}} List</h1>
+    <h1>Series: {{condition.first.series}}</h1>
+    <h2>{{ condition.first.description }}</h2>
     <ul>
       {% for c in condition %}
-      <li>
-        <h2>{{ c.series }} / {{ c.description }}</h2>
-        <ul>
-            <li><strong>description:</strong> {{ c.description }}</li>
-            <li><strong>serial number:</strong> {{c.serial}}</li>
-            <li><strong>series:</strong> {{c.series}}</li>
-            <li><strong>condition:</strong> {{c.condition}}</li> 
-            <li><strong>lane:</strong> {{c.lane}}</li> 
-            <li><strong>created:</strong> ({{c.created_at}})</li>
-            <li><strong>ulid:</strong> ({{c.ulid}})</li>       
-        </ul>
-      </li>
+      <li>{{ c.condition }} L{{ c.lane }}</li>
       {% endfor %}
-
     </ul>
     {% else %}
       <p>There are no condition in the library.</p>

@@ -49,7 +49,8 @@ urlpatterns += [
     url(r'^charts/graph1$', charts.graph1, name='graph1'),
     url(r'^charts/graph2$', charts.graph2, name='graph2'),
     url(r'^charts/graph3$', charts.graph3, name='graph3'),
-    url(r'^charts/(?P<ulid>\w+)$', charts.UlidBerChartView, name='ulid_ber_chart'),
+    url(r'^charts/$', charts.BerChartListView, name='ber_chart_list'),
+    url(r'^charts/(?P<ulid>\w+).png$', charts.UlidBerChartView, name='ulid_ber_chart'),
 ]
 
 # はじめての Django アプリ作成、その 3 | Django documentation | Django 

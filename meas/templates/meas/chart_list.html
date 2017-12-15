@@ -1,13 +1,20 @@
 {% extends "meas/base.html" %}
 
 {% block content %}
+    <h1>ULID List</h1>
 
     {% if condition_list %}
-    <h1>Series List</h1>
     <ul>
+
       {% for c in condition_list %}
       <li>
-        <a href="{% url 'series_detail' c.series %}">{{ c.series }}</a> {{ c.description }}
+        <a href="{% url 'ulid_detail' c.ulid %}">{{ c.ulid }}</a>
+        {{c.serial}} 
+        L{{c.lane}} 
+        {{ c.description }}
+        {{ c.condition }}
+        ({{c.created_at}})
+        <img src="{{c.ulid}}.png">
       </li>
       {% endfor %}
 

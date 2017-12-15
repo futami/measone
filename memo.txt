@@ -6,6 +6,17 @@
 ◆git 強制的にリモートリポジトリのmasterに合わせる
 $ git reset --hard origin/master
 
+◆
+web アプリケーションで matplotlib の図を表示する - Qiita
+https://qiita.com/5t111111/items/3d9efdbcc630daf0e48f
+	バックエンドに AGG (Anti-Grain Geometry) を使い、画像データを作ります。
+Cookbook/Matplotlib/Django - SciPy wiki dump
+http://scipy.github.io/old-wiki/pages/Cookbook/Matplotlib/Django
+	(r'^charts/simple.png$', 'myapp.views.charts.simple'),
+Matplotlib in Django
+https://bitsofpy.blogspot.jp/2009/07/matplotlib-in-django.html
+
+
 2017/12/06
 
 ◆参考サイト

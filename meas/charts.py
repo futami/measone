@@ -99,15 +99,20 @@ def UlidBerChartView(request, ulid):
     import matplotlib.pyplot as plt
     import numpy as np
 
+    #power = Entry.objects.filter(ulid=ulid, item='OpticalPower')
+    #ber = Entry.objects.filter(ulid=ulid, item='Pre-FEC_ber')
     qs = Entry.objects.filter(ulid=ulid, item='OpticalPower')
     vl = qs.values_list('value', flat=True)
     power = np.array(list(vl))
-    #power = Entry.objects.filter(ulid=ulid, item='OpticalPower')
-    #ber = Entry.objects.filter(ulid=ulid, item='Pre-FEC_ber')
+
     qs = Entry.objects.filter(ulid=ulid, item='Pre-FEC_ber')
     vl = qs.values_list('value', flat=True)
-    ber = np.array(list(vl))
+    prefecber = np.array(list(vl))
 
+    qs = Entry.objects.filter(ulid=ulid, item='Post-FEC_ber')
+    vl = qs.values_list('value', flat=True)
+    postfecber = np.array(list(vl))    
+    
     #import pdb; pdb.set_trace()
 
     import matplotlib.ticker as tick
@@ -120,8 +125,10 @@ def UlidBerChartView(request, ulid):
 
     fig, ax = plt.subplots()
     ax.set_title('BER plot')
-    ax.scatter(power, -np.log10(-np.log10(ber)), c='green')
+    ax.scatter(power, -np.log10(-np.log10(prefecber)), c='red')
+    ax.scatter(power, -np.log10(-np.log10(postfecber)), c='blue')
     ax.yaxis.set_major_locator(tick.FixedLocator(-np.log10(-np.log10(ylist))))
+    ax.set_ylim(-np.log10(-np.log10([1e-13, 1e-3])))
     ax.grid(True)
 
     canvas = FigureCanvasAgg(fig)
@@ -134,3 +141,9 @@ def UlidBerChartView(request, ulid):
     response['Content-Type'] = 'image/png'
     response['Content-Length'] = len(data)
     return response
+
+def BerChartListView(request):
+    from django.shortcuts import render
+    from .models import Condition
+    qs = Condition.objects.all()
+    return render(request, 'meas/chart_list.html', {'condition_list': qs})
