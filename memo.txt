@@ -1,3 +1,104 @@
+2017/12/20(水)
+
+◆Pythonの可視化ツール、いろいろあるよ - slideship.com
+https://slideship.com/users/@driller/presentations/2017/10/C9HQJ3vwMoAyzuMkeEdEV1/
+種類
+・matplotlibベース：matplotlib, pandas
+・Javascriptベース：Bokeh, Plotly
+	Plotly	レンダリングはオンラインまたはオフラインで実施。オンラインは重いのでオフラインがおすすめ
+・Vega/Vega-Lite：Altair
+	Vega	予め決められた構造データ(JSON形式)を渡すとCanvasやSVGで可視化できる
+	Vega-Lite	Vegaの軽量版 折れ線グラフや棒グラフなど、標準的なグラフはVega-Liteでこと足りる
+	Altair	Vega-Liteのパーサが用意されている
+			APIを使うことで内部でVega-Liteとして処理して可視化してくれる 
+			Pythyonの辞書やJSONにexportできる 
+			Jupyterだけでなく、PNG形式やHTML形式に出力できる 
+・OpenGLベース
+
+◆データ可視化記述フォーマットVega(Vega-lite)とPythonバインディングのAltair - Qiita
+https://qiita.com/mojaie/items/630b3e77a241cb0224ca
+Vega
+	https://vega.github.io/vega/
+	JSON形式でデータプロットの設定やデータを記述すると、CanvasやSVGでデータプロットが表示される。
+	Vega Editorというウェブアプリケーションを使って動作を確認することも可能。上部のプルダウンメニューから様々な使用例を見ることができる。
+Vega-lite
+	https://vega.github.io/vega-lite/
+	Vegaの軽量版。棒グラフ、折れ線グラフ、散布図などを作成するにはこれで十分。Vegaと同様に、Vega Editorでフォーマットと使用例が確認できる。
+Altair
+	https://altair-viz.github.io/index.html
+	Vega-liteパーサのPythonバインディング。
+	Pandasで処理したデータをAltairで可視化という感じになる。
+	Jupyter notebookでの使用例も豊富にあるので、説明するよりは例を見てもらったほうが早そう。
+	https://altair-viz.github.io/gallery/index.html
+IPython Vega
+	https://github.com/vega/ipyvega
+	Jupyter notebookで使うだけならAltairは必要なさそう。
+	IPython VegaというnotebookのextensionをインストールしてVegaかVega-liteのJSONを読み込めばより簡単にグラフをnotebook上に表示できる。
+
+◆プログラミング演習
+ToDoリスト、(UI)
+RSSリーダー、(web)
+
+
+2017/12/19(火)
+
+◆Bokehデモ
+Jupyter Notebook Viewer
+http://nbviewer.jupyter.org/github/bokeh/bokeh-notebooks/blob/master/quickstart/quickstart.ipynb
+
+◆Django+Bokehサンプルコード
+Bokeh | Interactive Visualization Library | Use Graph with Django Template | HackerEarth
+https://www.hackerearth.com/ja/practice/notes/bokeh-interactive-visualization-library-use-graph-with-django-template/
+
+◆bokeh検証
+> conda create -n bokeh
+> activate bokeh
+> conda install bokeh
+bokeh用サンプルデータ入手
+>bokeh sampledata
+
+◆pyqtgraph検証
+pyqtgraph用仮想環境作成
+> conda create -n pyqtgraph
+仮想環境へ移行
+> activate pyqtgraph
+PySide2インストール
+> conda install -c conda-forge pyside2 
+pyqtgraphインストール
+> conda install -c anaconda pyqtgraph 
+サンプル表示
+> python -m pyqtgraph.examples
+→サンプル実行では、PyQt5が使われている。PySideを選択しても見つからないエラー発生。
+ModuleNotFoundError: No module named 'PySide'
+ソースコードサンプルには、PyQt4,PySide,PyQt5の3種類、PySide2は無し
+
+◆AnacondaプロンプトからJupyter notebook起動方法
+>"c:\ProgramData\Anaconda3\Scripts\jupyter-notebook.exe"
+
+◆
+Quickstart — Bokeh 0.12.13 documentation
+https://bokeh.pydata.org/en/latest/docs/user_guide/quickstart.html#jupyter-notebooks
+
+
+2017/12/18(月)
+
+◆matplotlibによるBERchart生成
+matplotlibを使ったBERchart作成は、1個ずつだと問題ないが、HTML上にリストとしてたくさん生成しようとするとPythonが落ちる
+エラー
+WARNING: QApplication was not created in the main() thread.
+This application failed to start because it could not find or load the Qt platform plugin "windows" in "".
+→PyQtGraphを検討する
+PyQtGraph - Scientific Graphics and GUI Library for Python
+http://www.pyqtgraph.org/
+
+PyQtGraphはQtにアクセスする必要あり
+そのためには、QtをPythonから利用できるようにしたライブラリである、PyQtまたはPySideが必要
+PyQt4はGPLだが条件付きでLPGL、PySideはLGPL
+PyQt4はサポート終了して、今後はPyQt5が主流。
+PySideは古いPython（3.4まで）しかサポートしていない。
+ただしPyQt5はライセンスがGPLのみで商用利用はライセンスが必要
+Python3.5以降は、PySide2になる
+
 2017/12/14(木)
 
 ◆anacondaにmatplotilbインストールが必要

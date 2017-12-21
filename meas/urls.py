@@ -1,6 +1,7 @@
 from rest_framework import routers
 from . import views
 from . import charts
+from . import bokeh
 
 router = routers.DefaultRouter()
 router.register(r'conditions', views.ConditionViewSet)
@@ -53,6 +54,9 @@ urlpatterns += [
     url(r'^charts/(?P<ulid>\w+).png$', charts.UlidBerChartView, name='ulid_ber_chart'),
 ]
 
+urlpatterns += [
+    url(r'^bokeh/graph1$', bokeh.graph1, name='bokeh_graph1'),
+]
 # はじめての Django アプリ作成、その 3 | Django documentation | Django 
 # https://docs.djangoproject.com/ja/1.11/intro/tutorial03/
 #urlpatterns += [
