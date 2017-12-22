@@ -1,0 +1,19 @@
+{% extends "meas/base.html" %}
+
+{% block content %}
+<h1>ULID List</h1>
+
+  {% if chart_list %}
+  <ul>
+    {% for c in chart_list %}
+    <a href="{% url 'ulid_detail' c.ulid %}">{{ c.ulid }}</a>
+    {{ c.div | safe }}
+
+    {% endfor %}
+  </ul>
+  <script type="text/javascript" src="http://cdn.pydata.org/bokeh/release/bokeh-0.12.13.min.js"></script>
+  {% for c in chart_list %}
+    {{ c.script | safe }}
+  {% endfor %}
+  {% endif %} 
+{% endblock %}

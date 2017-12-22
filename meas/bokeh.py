@@ -1,7 +1,7 @@
 from django.shortcuts import render_to_response
+import numpy as np
 
 def graph1(request):
-    import numpy as np
 
     x= [1,3,5,7,9,11,13]
     y= [1,2,3,4,5,6,7]
@@ -16,12 +16,10 @@ def graph1(request):
 
     from bokeh.plotting import figure, output_file, show 
     from bokeh.embed import components
-    from bokeh.resources import CDN
-    from bokeh.embed import file_html
+    #from bokeh.resources import CDN
+    #from bokeh.embed import file_html
 
-    title = 'BER plot'
-
-    plot = figure(title= title, x_axis_label= 'X-Axis', y_axis_label= 'Y-Axis', 
+    plot = figure(title= 'BER plot', x_axis_label= 'Pin', y_axis_label= 'BER', 
     plot_width =400, plot_height =400)
 
     plot.line(p1, b3, legend= 'BER1', line_width = 2, color='red')
@@ -32,3 +30,87 @@ def graph1(request):
     #Feed them to the Django template.
     return render_to_response( 'meas/bokeh_image.html', {'script' : script , 'div' : div} )
     #return file_html(plot, CDN, "my plot")
+
+def UlidBerChartView(request, ulid):
+    from .models import Entry
+    from bokeh.plotting import figure
+    from bokeh.resources import CDN
+    from bokeh.models.tickers import FixedTicker
+
+    #power = Entry.objects.filter(ulid=ulid, item='OpticalPower')
+    #ber = Entry.objects.filter(ulid=ulid, item='Pre-FEC_ber')
+    qs = Entry.objects.filter(ulid=ulid, item='OpticalPower')
+    vl = qs.values_list('value', flat=True)
+    power = np.array(list(vl))
+
+    qs = Entry.objects.filter(ulid=ulid, item='Pre-FEC_ber')
+    vl = qs.values_list('value', flat=True)
+    prefecber = np.array(list(vl))
+
+    qs = Entry.objects.filter(ulid=ulid, item='Post-FEC_ber')
+    vl = qs.values_list('value', flat=True)
+    postfecber = np.array(list(vl))
+
+    #ylist = []
+    #for i in range(-4,-13,-1):
+    #    ylist.append(10**i)
+    
+    plot = figure(title= 'BER plot', x_axis_label= 'Pin', y_axis_label= 'BER', 
+    plot_width =400, plot_height =400)
+
+    plot.scatter(power, -np.log10(-np.log10(prefecber)), legend= 'Pre-FEC', line_width = 2, color='red')
+    plot.scatter(power, -np.log10(-np.log10(postfecber)), legend= 'Post-FEC', line_width = 2, color='blue')
+
+    plot.yaxis.ticker = -np.log10(-np.log10(10 ** np.arange(-13, -3, 1.0)))
+    plot.ygrid.ticker = FixedTicker(ticks=-np.log10(-np.log10(10 ** np.arange(-13, -3, 1.0))))
+
+    from bokeh.embed import file_html
+    from django.http import HttpResponse
+
+    response = HttpResponse(file_html(plot, CDN, 'my plot'))
+    return response
+    #return file_html(plot, CDN, 'my plot')
+    # Error: file_html: 'str' object has no attribute 'get'
+
+def BerChartListView(request):
+    from django.shortcuts import render
+    from .models import Condition
+    from .models import Entry
+    qs = Condition.objects.all()
+    ulid_list = Condition.objects.values_list('ulid', flat=True)
+    #import pdb; pdb.set_trace()
+
+    from bokeh.plotting import figure
+    from bokeh.embed import components
+    from bokeh.models.tickers import FixedTicker
+
+    chart_list=[]
+    for ulid in ulid_list:
+        qs = Entry.objects.filter(ulid=ulid, item='OpticalPower')
+        vl = qs.values_list('value', flat=True)
+        power = np.array(list(vl))
+
+        qs = Entry.objects.filter(ulid=ulid, item='Pre-FEC_ber')
+        vl = qs.values_list('value', flat=True)
+        prefecber = np.array(list(vl))
+
+        qs = Entry.objects.filter(ulid=ulid, item='Post-FEC_ber')
+        vl = qs.values_list('value', flat=True)
+        postfecber = np.array(list(vl))
+
+        plot = figure(title= 'BER plot', x_axis_label= 'Pin', y_axis_label= 'BER', 
+        plot_width =400, plot_height =400)
+
+        plot.scatter(power, -np.log10(-np.log10(prefecber)), legend= 'Pre-FEC', line_width = 2, color='red')
+        plot.scatter(power, -np.log10(-np.log10(postfecber)), legend= 'Post-FEC', line_width = 2, color='blue')
+
+        plot.yaxis.ticker = -np.log10(-np.log10(10 ** np.arange(-13, -3, 1.0)))
+        plot.ygrid.ticker = FixedTicker(ticks=-np.log10(-np.log10(10 ** np.arange(-13, -3, 1.0))))
+
+        script, div = components(plot)
+        
+        #import pdb; pdb.set_trace()
+        chart_list.append({'ulid': ulid, 'script': script, 'div': div})
+
+    #import pdb; pdb.set_trace()
+    return render(request, 'meas/bokeh_list.html', {'chart_list': chart_list})

@@ -1,4 +1,23 @@
+2017/12/22(金)
+
+◆Bokehのサーバ上でグラフをレンダリングする
+Exporting Plots — Bokeh 0.12.13 documentation
+http://bokeh.pydata.org/en/latest/docs/user_guide/export.html
+export_pngを使えば、サーバ側でファイルに変換できる
+ただしphantomjs（webkitベースのヘッドレスブラウザ）が必要
+selenium（WebUIテストツール）も必要？
+conda install selenium phantomjs pillow
+
+from bokeh.io import export_png
+export_png(plot, filename="plot.png")
+
 2017/12/20(水)
+
+◆bokeh djangoサンプル
+Bokeh | Interactive Visualization Library | Use Graph with Django Template | HackerEarth
+https://www.hackerearth.com/ja/practice/notes/bokeh-interactive-visualization-library-use-graph-with-django-template/
+
+
 
 ◆Pythonの可視化ツール、いろいろあるよ - slideship.com
 https://slideship.com/users/@driller/presentations/2017/10/C9HQJ3vwMoAyzuMkeEdEV1/

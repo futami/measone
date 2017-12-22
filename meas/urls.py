@@ -56,6 +56,8 @@ urlpatterns += [
 
 urlpatterns += [
     url(r'^bokeh/graph1$', bokeh.graph1, name='bokeh_graph1'),
+    url(r'^bokeh/$', bokeh.BerChartListView, name='ber_bokeh_list'),
+    url(r'^bokeh/(?P<ulid>\w+)$', bokeh.UlidBerChartView, name='ulid_ber_bokeh'),
 ]
 # はじめての Django アプリ作成、その 3 | Django documentation | Django 
 # https://docs.djangoproject.com/ja/1.11/intro/tutorial03/
