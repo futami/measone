@@ -2,6 +2,7 @@ from rest_framework import routers
 from . import views
 from . import charts
 from . import bokeh
+from . import upload
 
 router = routers.DefaultRouter()
 router.register(r'conditions', views.ConditionViewSet)
@@ -59,6 +60,12 @@ urlpatterns += [
     url(r'^bokeh/$', bokeh.BerChartListView, name='ber_bokeh_list'),
     url(r'^bokeh/(?P<ulid>\w+)$', bokeh.UlidBerChartView, name='ulid_ber_bokeh'),
 ]
+
+urlpatterns += [
+    url(r'^upload/$', upload.form, name='upload_file'),
+    url(r'^upload_complete/$', upload.complete, name='upload_complete'),
+]
+
 # はじめての Django アプリ作成、その 3 | Django documentation | Django 
 # https://docs.djangoproject.com/ja/1.11/intro/tutorial03/
 #urlpatterns += [

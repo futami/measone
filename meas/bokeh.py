@@ -72,42 +72,50 @@ def UlidBerChartView(request, ulid):
     #return file_html(plot, CDN, 'my plot')
     # Error: file_html: 'str' object has no attribute 'get'
 
+def plot_ulid(ulid):
+    from .models import Entry
+    from bokeh.plotting import figure
+    from bokeh.models.tickers import FixedTicker 
+
+    qs = Entry.objects.filter(ulid=ulid, item='OpticalPower')
+    vl = qs.values_list('value', flat=True)
+    power = np.array(list(vl))
+
+    qs = Entry.objects.filter(ulid=ulid, item='Pre-FEC_ber')
+    vl = qs.values_list('value', flat=True)
+    prefecber = np.array(list(vl))
+
+    qs = Entry.objects.filter(ulid=ulid, item='Post-FEC_ber')
+    vl = qs.values_list('value', flat=True)
+    postfecber = np.array(list(vl))
+
+    plot = figure(title= 'BER plot', x_axis_label= 'Pin', y_axis_label= 'BER', 
+    plot_width =400, plot_height =400)
+
+    plot.scatter(power, -np.log10(-np.log10(prefecber)), legend= 'Pre-FEC', line_width = 2, color='red')
+    plot.scatter(power, -np.log10(-np.log10(postfecber)), legend= 'Post-FEC', line_width = 2, color='blue')
+
+    plot.yaxis.ticker = -np.log10(-np.log10(10 ** np.arange(-13, -3, 1.0)))
+    plot.ygrid.ticker = FixedTicker(ticks=-np.log10(-np.log10(10 ** np.arange(-13, -3, 1.0))))
+
+    return plot
+
 def BerChartListView(request):
     from django.shortcuts import render
     from .models import Condition
-    from .models import Entry
+    # from .models import Entry
     qs = Condition.objects.all()
     ulid_list = Condition.objects.values_list('ulid', flat=True)
     #import pdb; pdb.set_trace()
 
-    from bokeh.plotting import figure
+    # from bokeh.plotting import figure
     from bokeh.embed import components
-    from bokeh.models.tickers import FixedTicker
+    # from bokeh.models.tickers import FixedTicker
 
     chart_list=[]
     for ulid in ulid_list:
-        qs = Entry.objects.filter(ulid=ulid, item='OpticalPower')
-        vl = qs.values_list('value', flat=True)
-        power = np.array(list(vl))
 
-        qs = Entry.objects.filter(ulid=ulid, item='Pre-FEC_ber')
-        vl = qs.values_list('value', flat=True)
-        prefecber = np.array(list(vl))
-
-        qs = Entry.objects.filter(ulid=ulid, item='Post-FEC_ber')
-        vl = qs.values_list('value', flat=True)
-        postfecber = np.array(list(vl))
-
-        plot = figure(title= 'BER plot', x_axis_label= 'Pin', y_axis_label= 'BER', 
-        plot_width =400, plot_height =400)
-
-        plot.scatter(power, -np.log10(-np.log10(prefecber)), legend= 'Pre-FEC', line_width = 2, color='red')
-        plot.scatter(power, -np.log10(-np.log10(postfecber)), legend= 'Post-FEC', line_width = 2, color='blue')
-
-        plot.yaxis.ticker = -np.log10(-np.log10(10 ** np.arange(-13, -3, 1.0)))
-        plot.ygrid.ticker = FixedTicker(ticks=-np.log10(-np.log10(10 ** np.arange(-13, -3, 1.0))))
-
-        script, div = components(plot)
+        script, div = components(plot_ulid(ulid))
         
         #import pdb; pdb.set_trace()
         chart_list.append({'ulid': ulid, 'script': script, 'div': div})
