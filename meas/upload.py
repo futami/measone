@@ -14,6 +14,7 @@ UPLOADE_DIR = os.path.dirname(os.path.abspath(__file__)) + '/static/files/'
 from .views import ConditionViewSet
 from django.test import Client
 import json
+from .ulid2 import get_ulid_time
 
 def form(request):
     if request.method != 'POST':
@@ -31,15 +32,15 @@ def form(request):
 
     client = Client()
     while line:
-        #import pdb; pdb.set_trace()
         if 'description' in line:
-            #import pdb; pdb.set_trace()
             line = json.loads(line)
+            line['created_at'] = get_ulid_time(line['ulid'])
+            #import pdb; pdb.set_trace()
             response = client.post('/api/conditions/', line, format='json')
         else:
             line = json.loads(line)
+            line['created_at'] = get_ulid_time(line['ulid'])
             response = client.post('/api/entries/', line, format='json')
-        #_JsonParse(line)
         line = file.readline()
     
     file.close()

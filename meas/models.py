@@ -1,6 +1,7 @@
 from django.db import models
 
 # Create your models here.
+from datetime import datetime
 
 class Condition(models.Model):
     description = models.CharField(max_length=256)
@@ -9,7 +10,7 @@ class Condition(models.Model):
     lane = models.IntegerField(default=999, blank=True)
     ulid = models.CharField(max_length=30, unique=True)
     series = models.CharField(max_length=256)
-    created_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(default=datetime.now)
 
 class Entry(models.Model):
     ulid = models.ForeignKey('Condition', to_field='ulid')
@@ -18,6 +19,6 @@ class Entry(models.Model):
     text = models.CharField(default='', max_length=256)
     unit = models.CharField(max_length=16, blank=True)
     index = models.IntegerField(default=0)
-    created_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(default=datetime.now)
     class Meta:
         verbose_name_plural = "entries"
