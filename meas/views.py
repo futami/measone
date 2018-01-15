@@ -22,6 +22,7 @@ class ConditionViewSet(viewsets.ModelViewSet):
             #import pdb; pdb.set_trace()
             return super(ConditionViewSet, self).create(request, *args, **kwargs)
         else:
+            # site-packages\rest_framework\mixins.py class CreateModelMixin(object):
             for condition in conditions:
                 serializer = self.get_serializer(data=condition)
                 serializer.is_valid(raise_exception=True)
